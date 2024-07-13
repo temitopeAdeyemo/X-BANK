@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+option java_multiple_files= true;
+option java_package = "proto.user.proto";
+option java_outer_classname = "userProto";
+import "google/protobuf/any.proto";
+import "google/protobuf/timestamp.proto";
+
+message sayHelloUserRequest {
+  string service_name = 1;
+  string token = 2;
+}
+
+message sayHelloUserResponse {
+  string message = 1;
+}
+
+message SignupRequest {
+  string email = 1;
+  string phone_number = 2;
+  string password = 3;
+  string last_name = 4;
+  string first_name = 5;
+}
+
+message LoginRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message SignupResponse {
+  Status status = 1;
+}
+
+message LoginResponse {
+  string access_token = 1;
+}
+
+enum Status {
+  SUCCESSFUL = 0;
+  FAILED = 1;
+  PENDING = 2;
+}

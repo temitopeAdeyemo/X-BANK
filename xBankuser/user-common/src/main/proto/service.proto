@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option java_multiple_files= true;
+option java_package = "proto.service.proto";
+option java_outer_classname = "userProtoService";
+import "google/protobuf/any.proto";
+import "google/protobuf/timestamp.proto";
+import "user.proto";
+
+service AuthService {
+  rpc SayHelloUser(sayHelloUserRequest) returns (sayHelloUserResponse){}
+  rpc LoginUser(LoginRequest) returns (LoginResponse){}
+}
+
+service RegisterService {
+  rpc RegisterUser(SignupRequest) returns (SignupResponse){}
+}
