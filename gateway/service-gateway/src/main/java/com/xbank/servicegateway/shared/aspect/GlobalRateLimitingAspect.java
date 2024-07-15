@@ -25,7 +25,6 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 public class GlobalRateLimitingAspect {
-
     private final RateLimiter rateLimiter;
     private final JwtClient jwtUtil;
     private final HttpServletRequest request;

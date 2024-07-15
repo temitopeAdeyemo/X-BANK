@@ -6,6 +6,7 @@ option java_outer_classname = "userProtoService";
 import "google/protobuf/any.proto";
 import "google/protobuf/timestamp.proto";
 import "user.proto";
+import "verifyEmail.proto";
 
 service AuthService {
   rpc SayHelloUser(sayHelloUserRequest) returns (sayHelloUserResponse){}
@@ -14,4 +15,9 @@ service AuthService {
 
 service RegisterService {
   rpc RegisterUser(SignupRequest) returns (SignupResponse){}
+}
+
+service VerifyEmailService {
+  rpc RequestOtp(RequestOtpRequest) returns (RequestOtpResponse){}
+  rpc VerifyOtp(VerifyOtpRequest) returns (VerifyOtpResponse){}
 }
