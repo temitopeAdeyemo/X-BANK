@@ -3,6 +3,8 @@ package com.xbankuser.userservice.modules.auth.entiy;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -15,6 +17,8 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
+@Data
 @Entity
 @Table(name = "xbank_user")
 public class User implements UserDetails {
@@ -52,6 +56,9 @@ public class User implements UserDetails {
     @NotNull
     @Column(name = "first_name", nullable = false)
     private  String firstName;
+
+    @Column(name = "email_verified" )
+    private Boolean emailVerified = false;
 
     @Enumerated(EnumType.STRING) // EnumType.ORDINAL means you get 0, 1, 2 but string get the string value.
     private Role role;

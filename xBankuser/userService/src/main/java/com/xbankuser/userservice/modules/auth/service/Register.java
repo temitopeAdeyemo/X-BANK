@@ -32,7 +32,7 @@ public class Register extends RegisterServiceGrpc.RegisterServiceImplBase {
 
         String hashedPassword = passwordEncoder.encode(request.getPassword());
 
-        User userData = new User(null, request.getEmail(), request.getPhoneNumber(), hashedPassword, request.getLastName(), request.getFirstName(), Role.USER);
+        User userData = new User(null, request.getEmail(), request.getPhoneNumber(), hashedPassword, request.getLastName(), request.getFirstName(), false, Role.USER);
         this.userRepository.save(userData);
 
         responseObserver.onNext(SignupResponse.newBuilder().setStatus(Status.SUCCESSFUL).build());

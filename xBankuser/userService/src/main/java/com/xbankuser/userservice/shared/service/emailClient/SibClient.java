@@ -1,6 +1,7 @@
 package com.xbankuser.userservice.shared.service.emailClient;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import sendinblue.ApiClient;
 import sendinblue.ApiException;
 import sendinblue.Configuration;
@@ -9,6 +10,7 @@ import sibApi.TransactionalEmailsApi;
 import sibModel.*;
 import java.util.List;
 
+@Service
 public class SibClient {
     @Value("${sib.apikey}")
     private static String sibApiKey;
