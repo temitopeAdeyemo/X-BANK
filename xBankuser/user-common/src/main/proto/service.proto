@@ -8,10 +8,12 @@ import "google/protobuf/timestamp.proto";
 import "user.proto";
 import "verifyEmail.proto";
 import "getUser.proto";
+import "updateUser.proto";
 
 service AuthService {
   rpc SayHelloUser(sayHelloUserRequest) returns (sayHelloUserResponse){}
   rpc LoginUser(LoginRequest) returns (LoginResponse){}
+  rpc AuthenticateUser(Empty) returns (User){}
 }
 
 service RegisterService {
@@ -26,4 +28,8 @@ service VerifyEmailService {
 service GetUserService {
   rpc GetUserByUniqueField(GetUserByUniqueFieldRequest) returns (User){}
   rpc GetAllUsers(GetAllUsersRequest) returns (GetAllUsersResponse){}
+}
+
+service UpdateUserService {
+  rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse){}
 }

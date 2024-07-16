@@ -1,6 +1,7 @@
 package com.xbankuser.userservice.modules.auth.repository;
 
 import com.xbankuser.userservice.modules.auth.entiy.User;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -16,5 +17,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     @Query("SELECT user FROM User user where user.email = :uniqueData OR cast(user.id as string ) = :uniqueData OR user.phoneNumber = :uniqueData")
     Optional<User> findByUniqueData(String uniqueData);
 
-
+//    @NotNull
+//    @Override
+//    <S extends User> S save(@NotNull S entity);
 }

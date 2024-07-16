@@ -36,6 +36,8 @@ message LoginResponse {
   string access_token = 1;
 }
 
+message Empty {}
+
 enum Status {
   SUCCESSFUL = 0;
   FAILED = 1;

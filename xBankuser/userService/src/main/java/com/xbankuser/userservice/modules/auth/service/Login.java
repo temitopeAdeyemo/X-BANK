@@ -1,10 +1,11 @@
 package com.xbankuser.userservice.modules.auth.service;
 
 import com.xbankuser.userservice.config.JwtAuthProvider;
+import com.xbankuser.userservice.shared.mapper.UserDataMapper;
 import com.xbankuser.userservice.shared.service.Jwt.JwtService;
-import com.xbankuser.userservice.modules.auth.entiy.User;
 import com.xbankuser.userservice.modules.auth.repository.UserRepository;
 import com.xbankuser.userservice.shared.exception.CredentialExistsException;
+import com.xbankuser.userservice.shared.utils.ContextKeys;
 import io.grpc.stub.StreamObserver;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -17,6 +18,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import proto.getUser.proto.User;
 import proto.service.proto.AuthServiceGrpc;
 import proto.user.proto.*;
 
@@ -58,6 +60,15 @@ public class Login extends AuthServiceGrpc.AuthServiceImplBase {
     @Override
     public void sayHelloUser(sayHelloUserRequest request, StreamObserver<sayHelloUserResponse> responseObserver) {
         responseObserver.onNext(sayHelloUserResponse.newBuilder().setMessage("Hello Word!!!").build());
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void authenticateUser(Empty request, StreamObserver<User> responseObserver) {
+        com.xbankuser.userservice.modules.auth.entiy.User user = ContextKeys.user.get();
+
+        User userBuild = UserDataMapper.mapUserToProtobuf(user);
+        responseObserver.onNext(userBuild);
         responseObserver.onCompleted();
     }
 }

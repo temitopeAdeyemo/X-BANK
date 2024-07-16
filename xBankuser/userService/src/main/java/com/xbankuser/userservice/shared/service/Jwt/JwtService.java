@@ -1,11 +1,15 @@
 package com.xbankuser.userservice.shared.service.Jwt;
 
+import com.xbankuser.userservice.modules.auth.entiy.User;
+import com.xbankuser.userservice.modules.auth.repository.UserRepository;
+import com.xbankuser.userservice.shared.exception.UserNotFoundException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -19,8 +23,9 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
+@RequiredArgsConstructor
 public class JwtService {
-
+    private final UserRepository userRepository;
 //    private static final String SECRET_KEY = "84fe6d7bddfaa2becd1442b454853786ea7aed767c7017ec";
     @Value("${jwt.signature.key}")
     private String SECRET_KEY;
@@ -29,6 +34,12 @@ public class JwtService {
     private String TOKEN_EXPIRATION_PERIOD;
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
+    }
+
+    public User extractUser(String token) {
+        String username =  extractUsername(token);
+
+        return this.userRepository.findByEmail(username).orElseThrow(()->new UserNotFoundException("Authorised User User Not Found."));
     }
 
     public Claims extractAllClaims(String token){

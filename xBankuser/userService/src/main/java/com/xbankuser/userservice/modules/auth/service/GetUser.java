@@ -3,12 +3,14 @@ package com.xbankuser.userservice.modules.auth.service;
 import com.xbankuser.userservice.modules.auth.entiy.Role;
 import com.xbankuser.userservice.modules.auth.repository.UserRepository;
 import com.xbankuser.userservice.shared.exception.UserNotFoundException;
+import com.xbankuser.userservice.shared.mapper.UserDataMapper;
 import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 import proto.getUser.proto.GetAllUsersRequest;
 import proto.getUser.proto.GetAllUsersResponse;
 import proto.getUser.proto.GetUserByUniqueFieldRequest;
@@ -20,26 +22,14 @@ import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
+@Service
 public class GetUser extends GetUserServiceGrpc.GetUserServiceImplBase {
     private final UserRepository userRepository;
-
     @Override
     public void getUserByUniqueField(GetUserByUniqueFieldRequest request, StreamObserver<User> responseObserver) {
-        var user = this.userRepository.findByUniqueData(request.getValue());
+        var user = this.userRepository.findByUniqueData(request.getValue()).orElseThrow(()->new UserNotFoundException("User Not Found"));
 
-        if(user.isEmpty())throw new UserNotFoundException("User Not Found");
-
-        var userInfo = user.get();
-
-        User userBuild = User.newBuilder()
-                .setId(String.valueOf(userInfo.getId()))
-                .setEmail(userInfo.getEmail())
-                .setPhoneNumber(userInfo.getPhoneNumber())
-                .setEmailVerified(userInfo.getEmailVerified())
-                .setRole(userInfo.getRole().name())
-                .setFirstName(userInfo.getFirstName())
-                .setLastName(userInfo.getLastName())
-                .build();
+        User userBuild = UserDataMapper.mapUserToProtobuf(user);
 
         responseObserver.onNext(userBuild);
         responseObserver.onCompleted();
@@ -69,15 +59,7 @@ public class GetUser extends GetUserServiceGrpc.GetUserServiceImplBase {
         List<User> userList = new ArrayList<>();
 
         for(var user: users) {
-            User userBuild = User.newBuilder()
-                    .setId(String.valueOf(user.getId()))
-                    .setEmail(user.getEmail())
-                    .setPhoneNumber(user.getPhoneNumber())
-                    .setEmailVerified(user.getEmailVerified())
-                    .setRole(user.getRole().name())
-                    .setFirstName(user.getFirstName())
-                    .setLastName(user.getLastName())
-                    .build();
+            User userBuild = UserDataMapper.mapUserToProtobuf(user);
             userList.add(userBuild);
         }
 

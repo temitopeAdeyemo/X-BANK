@@ -30,6 +30,8 @@ message User {
   string first_name = 5;
   string role = 6;
   bool email_verified = 7;
+  string created_at = 8;
+  string updated_at = 9;
 }
 enum GetUserUniqueFields{
   ID = 0;
