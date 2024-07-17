@@ -1,20 +1,15 @@
 package com.xbankuser.userservice.config;
 
+import com.xbankuser.userservice.modules.auth.entiy.User;
 import com.xbankuser.userservice.modules.auth.repository.UserRepository;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.security.core.userdetails.UserDetailsService;
-
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -24,7 +19,7 @@ public class JwtAuthProvider implements AuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         if(!authentication.isAuthenticated()){
-            UserDetails userDetails = new DomainUserDetails().loadUserByUsername(authentication.getName());
+            var userDetails = new DomainUserDetails().loadUserByUsername(authentication.getName());
             return new UsernamePasswordAuthenticationToken(userDetails.getUsername(), userDetails.getPassword(), userDetails.getAuthorities());
         }
         return authentication;
@@ -50,8 +45,8 @@ public class JwtAuthProvider implements AuthenticationProvider {
          *                                   GrantedAuthority
          */
         @Override
-        public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-            System.out.println("In userDetailsService **************** ");
+//        public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        public User loadUserByUsername(String username) throws UsernameNotFoundException {
             return  repository.findByEmail(username).orElseThrow(()-> new UsernameNotFoundException("User not found"));
         }
     }

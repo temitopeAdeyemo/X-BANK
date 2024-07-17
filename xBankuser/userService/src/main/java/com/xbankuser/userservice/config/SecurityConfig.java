@@ -1,10 +1,13 @@
 package com.xbankuser.userservice.config;
 
 import com.xbankuser.userservice.modules.auth.repository.UserRepository;
+import com.xbankuser.userservice.shared.Interceptor.GrpcAuthInterceptor;
 import com.xbankuser.userservice.shared.service.Jwt.JwtService;
+import io.grpc.ServerInterceptor;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
+import net.devh.boot.grpc.server.interceptor.GrpcGlobalServerInterceptor;
 import net.devh.boot.grpc.server.security.authentication.BearerAuthenticationReader;
 import net.devh.boot.grpc.server.security.authentication.GrpcAuthenticationReader;
 import net.devh.boot.grpc.server.security.check.AccessPredicate;
@@ -24,6 +27,8 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import proto.service.proto.AuthServiceGrpc;
+import proto.service.proto.GetUserServiceGrpc;
+import proto.service.proto.UpdateUserServiceGrpc;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -61,12 +66,39 @@ public class SecurityConfig {
     AuthenticationManager authenticationManager(){
         return new ProviderManager(jwtAuthProvider);
     }
+
     @Bean
     GrpcSecurityMetadataSource grpcSecurityMetadataSource(){
         ManualGrpcSecurityMetadataSource manualGrpcSecurityMetadataSource  = new ManualGrpcSecurityMetadataSource();
         manualGrpcSecurityMetadataSource.setDefault(AccessPredicate.permitAll());
         manualGrpcSecurityMetadataSource.set(AuthServiceGrpc.getSayHelloUserMethod(), AccessPredicate.authenticated());
+
+        manualGrpcSecurityMetadataSource.set(AuthServiceGrpc.getAuthenticateUserMethod(), AccessPredicate.authenticated());
+
+        manualGrpcSecurityMetadataSource.set(GetUserServiceGrpc.getGetAllUsersMethod(), AccessPredicate.authenticated());
+        manualGrpcSecurityMetadataSource.set(GetUserServiceGrpc.getGetUserByUniqueFieldMethod(), AccessPredicate.authenticated());
+        manualGrpcSecurityMetadataSource.set(UpdateUserServiceGrpc.getUpdateUserMethod(), AccessPredicate.authenticated());
+
+
+//        manualGrpcSecurityMetadataSource.setDefault(AccessPredicate.permitAll());
+//
+//        manualGrpcSecurityMetadataSource.set(AuthServiceGrpc.getAuthenticateUserMethod(), AccessPredicate.authenticated());
+//        manualGrpcSecurityMetadataSource.set(AuthServiceGrpc.getSayHelloUserMethod(), AccessPredicate.authenticated());
+//
+//        manualGrpcSecurityMetadataSource.set(GetUserServiceGrpc.getGetAllUsersMethod(), AccessPredicate.authenticated());
+//        manualGrpcSecurityMetadataSource.set(GetUserServiceGrpc.getGetUserByUniqueFieldMethod(), AccessPredicate.authenticated());
+//        manualGrpcSecurityMetadataSource.set(UpdateUserServiceGrpc.getUpdateUserMethod(), AccessPredicate.authenticated());
+
+
+
+
         return manualGrpcSecurityMetadataSource;
+    }
+
+    @Bean
+    @GrpcGlobalServerInterceptor
+    public ServerInterceptor authInterceptor() {
+        return new GrpcAuthInterceptor(this.jwtService);
     }
 
     @Bean

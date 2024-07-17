@@ -9,9 +9,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class GrpcConfig {
 
-    @Bean
-    @GrpcGlobalServerInterceptor
-    public ServerInterceptor authInterceptor() {
-        return new GrpcAuthInterceptor();
-    }
+//    @Bean
+//    @GrpcGlobalServerInterceptor
+//    public ServerInterceptor authInterceptor() {
+//        return new GrpcAuthInterceptor();
+//    }
 }

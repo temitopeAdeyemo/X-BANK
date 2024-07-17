@@ -39,27 +39,36 @@ public class JwtService {
     public User extractUser(String token) {
         String username =  extractUsername(token);
 
-        return this.userRepository.findByEmail(username).orElseThrow(()->new UserNotFoundException("Authorised User User Not Found."));
+        return this.userRepository.findByEmail(username).orElseThrow(()->new UserNotFoundException("Authorised User Not Found."));
     }
 
     public Claims extractAllClaims(String token){
-        System.out.println("*********************    12");
-        System.out.println("All claims:::" + Jwts.parserBuilder()
-                .setSigningKey(getSignInKey())
-                .build().parseClaimsJws(token)
-                .getBody());
-        System.out.println("*********************    13");
-        return Jwts.parserBuilder()
-                .setSigningKey(getSignInKey())
-                .build().parseClaimsJws(token)
-                .getBody();
+//        System.out.println("*********************    12");
+//        System.out.println("All claims:::" + Jwts.parserBuilder()
+//                .setSigningKey(getSignInKey())
+//                .build().parseClaimsJws(token)
+//                .getBody());
+//        System.out.println("*********************    13");
+            token = token.startsWith("Bearer")? token.substring(7): token;
+
+            return Jwts.parserBuilder()
+                    .setSigningKey(getSignInKey())
+                    .build().parseClaimsJws(token)
+                    .getBody();
+
+//        var jj = Jwts.parserBuilder()
+//                .setSigningKey(getSignInKey())
+//                .build().parseClaimsJws(token)
+//                .getBody();
+//        System.out.println("------------------------"+ jj);
+//        return jj;
     }
 
     private <T>T extractClaim(String token, Function<Claims, T> claimsResolver) {
         System.out.println("*********************    14");
         final Claims claims = extractAllClaims(token);
-        System.out.println("claimsResolver.apply(claims) ::" + claimsResolver.apply(claims));
-        System.out.println("*********************    15");
+//        System.out.println("claimsResolver.apply(claims) ::" + claimsResolver.apply(claims));
+        System.out.println("*********************    15"+claims);
         return claimsResolver.apply(claims);
     }
 
@@ -105,10 +114,12 @@ public class JwtService {
     }
 
     /*private*/public Key getSignInKey() {
-        System.out.println("getSignInKey *********************    27");
+        System.out.println("getSignInKey *********************    27"+ SECRET_KEY);
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
-        System.out.println("!!!!!!!!!!!"+Keys.secretKeyFor(SignatureAlgorithm.HS256).hashCode());
+        System.out.println("!!!!!!!!!!!.......");
 //        System.out.println(Keys.hmacShaKeyFor(keyBytes) + "Keys.hmacShaKeyFor(keyBytes) *********************    28");
-        return Keys.hmacShaKeyFor(keyBytes);
+        var d = Keys.hmacShaKeyFor(keyBytes);
+        System.out.println(":|||||||||||||||||||"+d);
+        return d;
     }
 }

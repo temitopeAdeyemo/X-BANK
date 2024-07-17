@@ -23,6 +23,7 @@ public class UserAdvice {
     public static StatusRuntimeException handleUserNotFoundException(UserNotFoundException ex){
         Status status = Status
                 .newBuilder()
+                .setMessage(ex.getMessage())
                 .setCode(Code.NOT_FOUND_VALUE)
                 .addDetails(
                         Any.pack(
@@ -122,10 +123,10 @@ public class UserAdvice {
 
     @GrpcExceptionHandler(Exception.class)
     public static StatusRuntimeException handleAllExceptions(Exception ex) {
-       String defaultErrorMessage =  ex.getMessage() != null? ex.getMessage():"SERVER ERROR";
-
+        System.out.println(ex);
+       String defaultErrorMessage =  ex.getMessage() != null? ex.getMessage():"SERVER ERROR:";
         Status status = Status
-                .newBuilder().setMessage("SERVER ERROR").
+                .newBuilder().setMessage("SERVER ERROR!").
                 setCode(Code.INTERNAL_VALUE)
                 .addDetails(
                         Any.pack(
@@ -170,7 +171,7 @@ public class UserAdvice {
 
     @GrpcExceptionHandler(UpstreamlServiceException.class)
     public StatusRuntimeException handleUpstreamServerException(UpstreamlServiceException ex) {
-        var defaultErrorMessage =  ex.getMessage() != null? ex.getMessage():"SERVER ERROR";
+        var defaultErrorMessage =  ex.getMessage() != null? ex.getMessage():"SERVER ERROR!";
 
         Status status = Status
                 .newBuilder().setMessage(ex.getMessage()).

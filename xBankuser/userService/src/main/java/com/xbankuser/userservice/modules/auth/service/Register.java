@@ -26,9 +26,9 @@ public class Register extends RegisterServiceGrpc.RegisterServiceImplBase {
 
         if(userEmailExists.isPresent()) throw new CredentialExistsException("Email Taken");
 
-        Optional<User> userPhoneExists = this.userRepository.findByPhoneNumber(request.getEmail());
+        Optional<User> userPhoneExists = this.userRepository.findByPhoneNumber(request.getPhoneNumber());
 
-        if(userPhoneExists.isPresent()) throw new CredentialExistsException("Email Taken");
+        if(userPhoneExists.isPresent()) throw new CredentialExistsException("Phone number Taken");
 
         String hashedPassword = passwordEncoder.encode(request.getPassword());
 
