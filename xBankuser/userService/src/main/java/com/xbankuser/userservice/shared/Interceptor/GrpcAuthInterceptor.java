@@ -26,7 +26,6 @@ public class GrpcAuthInterceptor implements ServerInterceptor {
 
         User user = null;
 
-//        assert token != null;
         if(token == null || token.isEmpty()){
             Context context = Context.current().withValue(ContextKeys.user, user);
             return Contexts.interceptCall(context, call, headers, next);
