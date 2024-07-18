@@ -1,10 +1,8 @@
 package com.xbankuser.userservice.modules.auth.service;
 
 import com.xbankuser.userservice.config.JwtAuthProvider;
-import com.xbankuser.userservice.shared.exception.UserNotFoundException;
 import com.xbankuser.userservice.shared.mapper.UserDataMapper;
 import com.xbankuser.userservice.shared.service.Jwt.JwtService;
-import com.xbankuser.userservice.modules.auth.repository.UserRepository;
 import com.xbankuser.userservice.shared.utils.ContextKeys;
 import io.grpc.stub.StreamObserver;
 import io.jsonwebtoken.Jwts;
@@ -17,7 +15,6 @@ import org.springframework.security.core.GrantedAuthority;
 import proto.getUser.proto.User;
 import proto.service.proto.AuthServiceGrpc;
 import proto.user.proto.*;
-
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;

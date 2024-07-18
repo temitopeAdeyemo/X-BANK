@@ -16,7 +16,6 @@ import proto.verifyEmail.proto.RequestOtpRequest;
 import proto.verifyEmail.proto.RequestOtpResponse;
 import proto.verifyEmail.proto.VerifyOtpRequest;
 import proto.verifyEmail.proto.VerifyOtpResponse;
-
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
