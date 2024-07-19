@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+option java_multiple_files= true;
+option java_package = "proto.service.proto";
+option java_outer_classname = "walletProtoService";
+import "google/protobuf/any.proto";
+import "google/protobuf/timestamp.proto";
+import "wallet.proto";
+
+service WalletService {
+  rpc SayHelloService(SayHello) returns (SayHelloResponse){}
+}

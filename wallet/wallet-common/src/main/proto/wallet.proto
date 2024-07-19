@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+option java_multiple_files= true;
+option java_package = "proto.wallet.proto";
+option java_outer_classname = "walletProto";
+import "google/protobuf/any.proto";
+import "google/protobuf/timestamp.proto";
+
+message SayHello{
+  string message = 1;
+}
+
+message SayHelloResponse {
+  string message = 1;
+}

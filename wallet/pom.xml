@@ -3,7 +3,7 @@
 	<groupId>com.xbank</groupId>
 	<artifactId>wallet</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>xBankUserService</name>
+	<name>xBankWalletService</name>
 	<description>x-wallet Application</description>
 	<modules>
 		<module>user-common</module>
