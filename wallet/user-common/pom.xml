@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.xbank</groupId>
-        <artifactId>xbankUser</artifactId>
+        <artifactId>wallet</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <groupId>com.xbankuser</groupId>
+    <groupId>com.xbank.user</groupId>
     <artifactId>user-common</artifactId>
 
     <properties>
@@ -61,6 +61,7 @@
                     </excludes>
                 </configuration>
             </plugin>
+
             <plugin>
                 <groupId>org.xolstice.maven.plugins</groupId>
                 <artifactId>protobuf-maven-plugin</artifactId>

@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+option java_multiple_files= true;
+option java_package = "proto.verifyEmail.proto";
+option java_outer_classname = "verifyEmailProto";
+import "google/protobuf/any.proto";
+import "google/protobuf/timestamp.proto";
+import "user.proto";
+
+message RequestOtpRequest {
+  string email = 1;
+}
+
+message VerifyOtpRequest{
+  string email = 1;
+  string otp = 2;
+}
+
+message RequestOtpResponse {
+  Status status = 1;
+}
+
+message VerifyOtpResponse{
+  Status status = 1;
+}

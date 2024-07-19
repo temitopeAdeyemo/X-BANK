@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.xbank</groupId>
-        <artifactId>xbankUser</artifactId>
+        <artifactId>wallet</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <groupId>com.xbankuser</groupId>
-    <artifactId>user-common</artifactId>
+    <groupId>com.xbank.wallet</groupId>
+    <artifactId>wallet-common</artifactId>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
