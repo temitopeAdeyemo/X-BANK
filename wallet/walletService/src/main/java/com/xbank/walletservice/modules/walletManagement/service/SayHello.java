@@ -7,6 +7,7 @@ import proto.wallet.proto.SayHelloResponse;
 
 @GrpcService
 public class SayHello extends WalletServiceGrpc.WalletServiceImplBase {
+
     @Override
     public void sayHelloService(proto.wallet.proto.SayHello request, StreamObserver<SayHelloResponse> responseObserver) {
         responseObserver.onNext(SayHelloResponse.newBuilder().setMessage("Hello World").build());
