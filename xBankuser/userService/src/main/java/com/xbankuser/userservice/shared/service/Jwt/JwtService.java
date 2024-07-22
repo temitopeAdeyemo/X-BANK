@@ -43,12 +43,7 @@ public class JwtService {
     }
 
     public Claims extractAllClaims(String token){
-//        System.out.println("*********************    12");
-//        System.out.println("All claims:::" + Jwts.parserBuilder()
-//                .setSigningKey(getSignInKey())
-//                .build().parseClaimsJws(token)
-//                .getBody());
-//        System.out.println("*********************    13");
+
             token = token.startsWith("Bearer")? token.substring(7): token;
 
             return Jwts.parserBuilder()
