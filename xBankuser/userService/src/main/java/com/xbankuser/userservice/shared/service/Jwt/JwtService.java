@@ -50,13 +50,6 @@ public class JwtService {
                     .setSigningKey(getSignInKey())
                     .build().parseClaimsJws(token)
                     .getBody();
-
-//        var jj = Jwts.parserBuilder()
-//                .setSigningKey(getSignInKey())
-//                .build().parseClaimsJws(token)
-//                .getBody();
-//        System.out.println("------------------------"+ jj);
-//        return jj;
     }
 
     private <T>T extractClaim(String token, Function<Claims, T> claimsResolver) {
