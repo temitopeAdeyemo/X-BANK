@@ -57,7 +57,7 @@ public class JwtService {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
-    
+
     public String generateToken( UserDetails userDetails){
         Instant now = Instant.now();
         Instant expiresAt = now.plus(Integer.parseInt(TOKEN_EXPIRATION_PERIOD), ChronoUnit.HOURS);
@@ -100,9 +100,7 @@ public class JwtService {
         System.out.println("getSignInKey *********************    27"+ SECRET_KEY);
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
         System.out.println("!!!!!!!!!!!.......");
-//        System.out.println(Keys.hmacShaKeyFor(keyBytes) + "Keys.hmacShaKeyFor(keyBytes) *********************    28");
         var d = Keys.hmacShaKeyFor(keyBytes);
-        System.out.println(":|||||||||||||||||||"+d);
         return d;
     }
 }
