@@ -6,6 +6,7 @@ public class UserDataMapper {
     public static User  mapUserToProtobuf(com.xbankuser.userservice.modules.auth.entiy.User userInfo){
         System.out.println(".................................................");
         boolean emailVerified = userInfo.getEmailVerified() != null && userInfo.getEmailVerified();
+        
         return User.newBuilder()
                 .setId(String.valueOf(userInfo.getId()))
                 .setEmail(userInfo.getEmail())
