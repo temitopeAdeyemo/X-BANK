@@ -57,10 +57,7 @@ public class JwtService {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
-
-//    public String generateToken( UserDetails userDetails){
-//        return generateToken(new HashMap<>(), userDetails);
-//    }
+    
     public String generateToken( UserDetails userDetails){
         Instant now = Instant.now();
         Instant expiresAt = now.plus(Integer.parseInt(TOKEN_EXPIRATION_PERIOD), ChronoUnit.HOURS);
