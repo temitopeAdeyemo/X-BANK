@@ -56,7 +56,6 @@ public class JwtService {
         System.out.println("*********************    14");
         final Claims claims = extractAllClaims(token);
 //        System.out.println("claimsResolver.apply(claims) ::" + claimsResolver.apply(claims));
-        System.out.println("*********************    15"+claims);
         return claimsResolver.apply(claims);
     }
 
