@@ -61,7 +61,7 @@ public class User implements UserDetails {
     @Column(name = "email_verified" )
     private Boolean emailVerified = false;
 
-    @Enumerated(EnumType.STRING) 
+    @Enumerated(EnumType.STRING)
     private Role role;
 
     @Temporal(TemporalType.TIMESTAMP)

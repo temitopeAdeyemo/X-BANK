@@ -25,7 +25,4 @@ public interface UserRepository extends JpaRepository<User, UUID>, JpaSpecificat
 
     @NotNull
     List<User> findAll(@NotNull Specification<User> spec);
-
-//    Page<User> findAllByEmailOrLastNameOrPhoneNumberOrRoleOrEmailVerified(String email, String lastName, String phoneNumber, Role role, boolean emailVerified, PageRequest pageable);
-
 }
