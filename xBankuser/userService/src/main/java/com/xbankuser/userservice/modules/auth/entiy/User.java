@@ -61,7 +61,7 @@ public class User implements UserDetails {
     @Column(name = "email_verified" )
     private Boolean emailVerified = false;
 
-    @Enumerated(EnumType.STRING) // EnumType.ORDINAL means you get 0, 1, 2 but string get the string value.
+    @Enumerated(EnumType.STRING) 
     private Role role;
 
     @Temporal(TemporalType.TIMESTAMP)
