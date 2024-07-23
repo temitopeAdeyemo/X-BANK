@@ -1,6 +1,7 @@
 package com.xbank.walletservice.modules.wallet.entity;
 
 import com.xbank.walletservice.modules.transaction.entity.Transaction;
+import com.xbank.walletservice.shared.utils.AccountNumberGenerator;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -34,7 +35,7 @@ public class Wallet {
 
     @NotNull
     @Column(name = "account_number", unique = true)
-    private String accountNumber;
+    private String accountNumber = AccountNumberGenerator.generate();
 
     private BigDecimal balance = BigDecimal.ZERO;
 

@@ -9,4 +9,5 @@ import "wallet.proto";
 
 service WalletService {
   rpc SayHelloService(SayHello) returns (SayHelloResponse){}
+  rpc CreateWallet(CreateWalletRequest) returns (CreateWalletResponse){}
 }

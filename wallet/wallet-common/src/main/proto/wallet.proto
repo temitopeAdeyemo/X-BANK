@@ -13,3 +13,11 @@ message SayHello{
 message SayHelloResponse {
   string message = 1;
 }
+
+message CreateWalletRequest {
+  string user_id = 1;
+}
+
+message CreateWalletResponse {
+  string account_number = 1;
+}
