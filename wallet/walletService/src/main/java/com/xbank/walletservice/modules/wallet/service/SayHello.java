@@ -1,4 +1,4 @@
-package com.xbank.walletservice.modules.walletManagement.service;
+package com.xbank.walletservice.modules.wallet.service;
 
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
