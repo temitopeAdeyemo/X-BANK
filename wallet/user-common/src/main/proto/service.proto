@@ -1,5 +1,5 @@
 syntax = "proto3";
-
+//package user;
 option java_multiple_files= true;
 option java_package = "proto.service.proto";
 option java_outer_classname = "userProtoService";
@@ -9,6 +9,7 @@ import "user.proto";
 import "verifyEmail.proto";
 import "getUser.proto";
 import "updateUser.proto";
+
 
 service AuthService {
   rpc SayHelloUser(sayHelloUserRequest) returns (sayHelloUserResponse){}

@@ -1,5 +1,5 @@
 syntax = "proto3";
-
+//package user;
 option java_multiple_files= true;
 option java_package = "proto.user.proto";
 option java_outer_classname = "userProto";

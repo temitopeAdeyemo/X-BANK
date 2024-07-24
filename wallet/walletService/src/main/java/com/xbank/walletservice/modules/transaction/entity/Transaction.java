@@ -19,7 +19,9 @@ import java.util.UUID;
 @Entity
 @Table(name = "xbank_transactions", indexes = {
         @Index(name = "idx_trans_id", columnList = "id"),
+        @Index(name = "idx_receiver_account_number_transaction_type", columnList = "transactionType, receiver_account_number"),
         @Index(name = "idx_receiver_account_number", columnList = "receiver_account_number"),
+        @Index(name = "idx_sender_account_number_transaction_type", columnList = "transactionType, sender_account_number"),
         @Index(name = "idx_sender_account_number", columnList = "sender_account_number"),
         @Index(name = "idx_transaction_created_at", columnList = "created_at")
 })
