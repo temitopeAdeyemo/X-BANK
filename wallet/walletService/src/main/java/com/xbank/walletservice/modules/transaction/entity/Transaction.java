@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
+import javax.annotation.Nonnegative;
 import javax.annotation.Nullable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -31,6 +31,7 @@ public class Transaction {
     @Nullable
     UUID id = UUID.randomUUID();
 
+    @Nonnegative
     private BigDecimal amount;
 
     @Column(name = "transaction_type")
@@ -47,6 +48,9 @@ public class Transaction {
 
     @Column(name = "source_code")
     private String sourceCode;
+
+    @Column(name = "trf_ref")
+    private String trfRef;
 
 //    @ManyToOne
 //    @JoinColumn(name = "wallet")

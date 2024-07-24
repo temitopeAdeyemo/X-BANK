@@ -6,6 +6,7 @@ import com.xbank.walletservice.shared.mapper.WalletDataMapper;
 import io.grpc.stub.StreamObserver;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.data.domain.*;
 import proto.service.proto.GetWalletServiceGrpc;
 import proto.wallet.proto.GetSingleWalletRequest;
@@ -15,7 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@AllArgsConstructor
+
+@GrpcService
 @RequiredArgsConstructor
 public class GetWallet extends GetWalletServiceGrpc.GetWalletServiceImplBase {
     private final WalletRepository walletRepository;
@@ -23,7 +25,8 @@ public class GetWallet extends GetWalletServiceGrpc.GetWalletServiceImplBase {
     @Override
     public void getSingleWallet(GetSingleWalletRequest request, StreamObserver<proto.wallet.proto.Wallet> responseObserver) {
         String uniqueData = request.getAccountNumber().isEmpty()?request.getId():request.getAccountNumber();
-        var wallet = this.walletRepository.getByAccountNumberOrId(uniqueData);
+
+        var wallet = this.walletRepository.getByAccountNumberOrId(uniqueData).orElseThrow(()->new RuntimeException("Error")); // Implement Wallet Not Found exception
 
         var walletBuild = WalletDataMapper.mapWalletToProtobuf(wallet);
 

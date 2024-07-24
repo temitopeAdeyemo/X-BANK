@@ -1,11 +1,12 @@
 syntax = "proto3";
-
+package wallet;
 option java_multiple_files= true;
 option java_package = "proto.service.proto";
 option java_outer_classname = "walletProtoService";
 import "google/protobuf/any.proto";
 import "google/protobuf/timestamp.proto";
 import "wallet.proto";
+import "transaction.proto";
 import "user.proto";
 
 service WalletService {
@@ -20,4 +21,15 @@ service GetWalletService {
 
 service DeleteWalletService {
   rpc DeleteWallet(DeleteWalletRequest) returns (Empty){}
+}
+
+service TransactionInitService {
+    rpc FundWallet (FundWalletRequest) returns (StatusResponse){}
+  rpc FundTransfer (FundTransferRequest) returns (FundTransferResponse){}
+}
+
+service GetTransactionService {
+  rpc GetBalance(GetBalanceRequest) returns (GetBalanceResponse){}
+  rpc GetSingleTransaction(GetSingleTransactionRequest) returns (Transaction){}
+  rpc GetAllTransactions(GetAllTransactionsRequest) returns (GetAllTransactionsResponse){}
 }
