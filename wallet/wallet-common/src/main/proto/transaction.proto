@@ -51,8 +51,11 @@ message GetAllTransactionsRequest {
 message GetAllTransactionsFilter {
   string sourceCode = 1;
   string account_number = 2;
-  TransactionType transactionType = 3;
-  string senderName = 4;
+  string senderName = 3;
+  oneof transactionType {
+    bool all = 4;
+    TransactionType specificType = 5;
+  };
 }
 
 message GetAllTransactionsResponse {

@@ -1,6 +1,7 @@
 package com.xbank.walletservice.modules.transaction.service;
 
 import com.xbank.walletservice.modules.transaction.repository.TransactionRepository;
+import com.xbank.walletservice.modules.transaction.repository.TransactionSpecification;
 import com.xbank.walletservice.shared.mapper.TransactionDataMapper;
 import com.xbank.walletservice.shared.utils.ResponseHandler;
 import io.grpc.stub.StreamObserver;
@@ -44,7 +45,12 @@ public class GetTransaction extends GetTransactionServiceGrpc.GetTransactionServ
         var filter = request.getFilterBy();
         var transaction = new com.xbank.walletservice.modules.transaction.entity.Transaction();
 
-        transaction.setTransactionType(com.xbank.walletservice.modules.transaction.entity.TransactionType.valueOf(filter.getTransactionType().toString()));
+        transaction.setTransactionType(com.xbank.walletservice.modules.transaction.entity.TransactionType.CREDIT);
+
+        if(filter.hasSpecificType()){
+            transaction.setTransactionType(com.xbank.walletservice.modules.transaction.entity.TransactionType.valueOf(filter.getSpecificType().toString()));
+        }
+
         transaction.setSourceCode(filter.getSourceCode());
 //        transaction.setReceiverAccountNumber(filter.getAccountNumber());
 
@@ -56,6 +62,29 @@ public class GetTransaction extends GetTransactionServiceGrpc.GetTransactionServ
 
         Example<com.xbank.walletservice.modules.transaction.entity.Transaction> transactionExample = Example.of(transaction, exampleMatcher);
         var transactions = transactionRepository.findAll(transactionExample, pageData);
+
+        List<Transaction> transactionList = new ArrayList<>();
+
+        for(var trans: transactions) {
+            Transaction transactionBuild = TransactionDataMapper.mapTransactionToProtobuf(trans);
+            transactionList.add(transactionBuild);
+        }
+
+        var responseBuild = GetAllTransactionsResponse.newBuilder().addAllTransactions(transactionList).build();
+
+        new ResponseHandler<GetAllTransactionsResponse>().respond(responseObserver, responseBuild);
+    }
+
+    public void getAllTransactions1(GetAllTransactionsRequest request, StreamObserver<GetAllTransactionsResponse> responseObserver) {
+        int page = request.getPage() < 1? 0 : request.getPage();
+        int size = request.getSize() < 1? 5 : request.getSize();
+        PageRequest pageData = PageRequest.of(page, size, Sort.by("created_at").descending());
+
+        var filter = request.getFilterBy();
+
+        var transactionSpec = TransactionSpecification.createSpecification(filter);
+
+        var transactions = transactionRepository.findAll(transactionSpec, pageData);
 
         List<Transaction> transactionList = new ArrayList<>();
 
