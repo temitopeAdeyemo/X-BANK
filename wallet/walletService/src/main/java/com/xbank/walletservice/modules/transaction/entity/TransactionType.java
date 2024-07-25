@@ -1,6 +1,6 @@
 package com.xbank.walletservice.modules.transaction.entity;
 
-enum TransactionType {
+public enum TransactionType {
     CREDIT,
     DEBIT
 }

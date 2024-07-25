@@ -43,6 +43,12 @@ message GetSingleTransactionRequest {
 }
 
 message GetAllTransactionsRequest {
+  int32 page = 1;
+  int32 size = 2;
+  GetAllTransactionsFilter filterBy = 3;
+}
+
+message GetAllTransactionsFilter {
   string sourceCode = 1;
   string account_number = 2;
   TransactionType transactionType = 3;
