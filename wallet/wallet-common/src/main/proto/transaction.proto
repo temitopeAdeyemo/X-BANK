@@ -27,14 +27,6 @@ message FundTransferResponse {
   string trf_ref = 1;
 }
 
-message GetBalanceRequest {
-  string account_number = 1;
-}
-
-message GetBalanceResponse {
-  string balance = 1;
-}
-
 message GetSingleTransactionRequest {
   oneof filterBy {
     string trf_ref = 1;

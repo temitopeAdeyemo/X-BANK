@@ -2,16 +2,15 @@ package com.xbank.walletservice.modules.wallet.service;
 
 import com.xbank.walletservice.modules.wallet.entity.Wallet;
 import com.xbank.walletservice.modules.wallet.repository.WalletRepository;
+import com.xbank.walletservice.shared.exception.EntityNotFoundException;
 import com.xbank.walletservice.shared.mapper.WalletDataMapper;
+import com.xbank.walletservice.shared.utils.ResponseHandler;
 import io.grpc.stub.StreamObserver;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.data.domain.*;
 import proto.service.proto.GetWalletServiceGrpc;
-import proto.wallet.proto.GetSingleWalletRequest;
-import proto.wallet.proto.GetWalletsRequest;
-import proto.wallet.proto.GetWalletsResponse;
+import proto.wallet.proto.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -26,7 +25,7 @@ public class GetWallet extends GetWalletServiceGrpc.GetWalletServiceImplBase {
     public void getSingleWallet(GetSingleWalletRequest request, StreamObserver<proto.wallet.proto.Wallet> responseObserver) {
         String uniqueData = request.getAccountNumber().isEmpty()?request.getId():request.getAccountNumber();
 
-        var wallet = this.walletRepository.getByAccountNumberOrId(uniqueData).orElseThrow(()->new RuntimeException("Error")); // Implement Wallet Not Found exception
+        var wallet = this.walletRepository.getByAccountNumberOrId(uniqueData).orElseThrow(()->new EntityNotFoundException("Wallet not found.")); // Implement Wallet Not Found exception
 
         var walletBuild = WalletDataMapper.mapWalletToProtobuf(wallet);
 
@@ -65,5 +64,14 @@ public class GetWallet extends GetWalletServiceGrpc.GetWalletServiceImplBase {
 
         responseObserver.onNext(walletListBuild);
         responseObserver.onCompleted();
+    }
+
+    @Override
+    public void getBalance(GetBalanceRequest request, StreamObserver<GetBalanceResponse> responseObserver) {
+        var wallet = this.walletRepository.getByAccountNumberOrId(request.getAccountNumber()).orElseThrow(()->new EntityNotFoundException("Wallet not found."));
+
+        var responseBuild = GetBalanceResponse.newBuilder().setBalance(String.valueOf(wallet.getBalance())).build();
+
+        new ResponseHandler<GetBalanceResponse>().respond(responseObserver, responseBuild);
     }
 }

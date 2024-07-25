@@ -2,13 +2,13 @@ package com.xbank.walletservice.modules.transaction.service;
 
 import com.xbank.walletservice.modules.transaction.repository.TransactionRepository;
 import com.xbank.walletservice.modules.transaction.repository.TransactionSpecification;
+import com.xbank.walletservice.shared.exception.EntityNotFoundException;
 import com.xbank.walletservice.shared.mapper.TransactionDataMapper;
 import com.xbank.walletservice.shared.utils.ResponseHandler;
 import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.data.domain.*;
-import proto.getUser.proto.User;
 import proto.service.proto.GetTransactionServiceGrpc;
 import proto.transaction.proto.*;
 
@@ -24,16 +24,11 @@ public class GetTransaction extends GetTransactionServiceGrpc.GetTransactionServ
     public void getSingleTransaction(GetSingleTransactionRequest request, StreamObserver<Transaction> responseObserver) {
         String uniqueData = request.getId().isEmpty()? request.getTrfRef(): request.getId();
 
-        var transaction = this.transactionRepository.findByReferenceOrId(uniqueData).orElseThrow(()->new RuntimeException("Error"));
+        var transaction = this.transactionRepository.findByReferenceOrId(uniqueData).orElseThrow(()->new EntityNotFoundException("Transaction not found."));
 
         var responseBuild = TransactionDataMapper.mapTransactionToProtobuf(transaction);
 
         new ResponseHandler<Transaction>().respond(responseObserver, responseBuild);
-    }
-
-    @Override
-    public void getBalance(GetBalanceRequest request, StreamObserver<GetBalanceResponse> responseObserver) {
-
     }
 
     @Override

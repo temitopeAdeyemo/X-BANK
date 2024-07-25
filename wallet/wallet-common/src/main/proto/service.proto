@@ -17,6 +17,7 @@ service WalletService {
 service GetWalletService {
     rpc GetWallets(GetWalletsRequest) returns (GetWalletsResponse){}
     rpc GetSingleWallet(GetSingleWalletRequest) returns (Wallet){}
+    rpc GetBalance(GetBalanceRequest) returns (GetBalanceResponse){}
 }
 
 service DeleteWalletService {
@@ -29,7 +30,6 @@ service TransactionInitService {
 }
 
 service GetTransactionService {
-  rpc GetBalance(GetBalanceRequest) returns (GetBalanceResponse){}
   rpc GetSingleTransaction(GetSingleTransactionRequest) returns (Transaction){}
   rpc GetAllTransactions(GetAllTransactionsRequest) returns (GetAllTransactionsResponse){}
 }

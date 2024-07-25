@@ -16,11 +16,13 @@ public class TransactionInit extends TransactionInitServiceGrpc.TransactionInitS
     private final TransactionRepository transactionRepository;
     @Override
     public void fundTransfer(FundTransferRequest request, StreamObserver<FundTransferResponse> responseObserver) {
-
+        // track session with user id for fund transfer. If user id session is still available during fund transfer, decline transaction
+        // implement status
     }
 
     @Override
     public void fundWallet(FundWalletRequest request, StreamObserver<StatusResponse> responseObserver) {
-
+        // track session with user id for fund Wallet. If user id session is still available during fund Wallet, decline transaction
+        // implement status
     }
 }

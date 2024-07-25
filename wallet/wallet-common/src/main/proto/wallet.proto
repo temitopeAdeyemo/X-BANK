@@ -49,6 +49,15 @@ message GetWalletFilter {
   string user_id = 2;
 }
 
+message GetBalanceRequest {
+  string account_number = 1;
+}
+
+message GetBalanceResponse {
+  string balance = 1;
+}
+
+
 message Wallet {
   string id = 1;
   string account_number = 2;

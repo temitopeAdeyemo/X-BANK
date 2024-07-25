@@ -27,7 +27,7 @@ public class UserAdvice {
                         Any.pack(
                                 (ErrorInfo.newBuilder()
                                         .setReason(ex.getMessage())
-                                        .setDomain("com.x-bank.userService")
+                                        .setDomain("com.x-bank.walletService")
                                         .build()
                                 )
                         )
@@ -51,7 +51,7 @@ public class UserAdvice {
                         Any.pack(
                                 (ErrorInfo.newBuilder()
                                         .setReason(ex.getMessage())
-                                        .setDomain("com.x-bank.userService")
+                                        .setDomain("com.x-bank.walletService")
                                         .build()
                                 )
                         )
@@ -70,8 +70,26 @@ public class UserAdvice {
                         Any.pack(
                                 ErrorInfo.newBuilder()
                                         .setReason("INTERNAL_SERVER_ERROR")
-                                        .setDomain("com.x-bank.userService")
+                                        .setDomain("com.x-bank.walletService")
                                 .build()
+                        )
+                )
+                .build();
+
+        return StatusProto.toStatusRuntimeException(status);
+    }
+
+    @GrpcExceptionHandler(EntityNotFoundException.class)
+    public static StatusRuntimeException handleEntityNotFoundException(EntityNotFoundException ex){
+        Status status = Status
+                .newBuilder().setMessage(ex.getMessage()).
+                setCode(Code.INTERNAL_VALUE)
+                .addDetails(
+                        Any.pack(
+                                ErrorInfo.newBuilder()
+                                        .setReason("NOT_FOUND")
+                                        .setDomain("com.x-bank.walletService")
+                                        .build()
                         )
                 )
                 .build();
@@ -90,7 +108,7 @@ public class UserAdvice {
                         Any.pack(
                                 ErrorInfo.newBuilder()
                                         .setReason(defaultErrorMessage )
-                                        .setDomain("com.x-bank.userService")
+                                        .setDomain("com.x-bank.walletService")
                                         .putMetadata("message", defaultErrorMessage)
                                         .build()
                         )
@@ -118,7 +136,7 @@ public class UserAdvice {
                         Any.pack(
                                 ErrorInfo.newBuilder()
                                         .setReason("JPA ERROR")
-                                        .setDomain("com.x-bank.userService")
+                                        .setDomain("com.x-bank.walletService")
                                         .build()
                         )
                 )
