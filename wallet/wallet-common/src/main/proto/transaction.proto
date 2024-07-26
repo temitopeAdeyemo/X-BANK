@@ -28,7 +28,7 @@ message FundTransferResponse {
 }
 
 message GetSingleTransactionRequest {
-  oneof filterBy {
+  oneof filter_by {
     string trf_ref = 1;
     string id = 2;
   }
@@ -41,13 +41,17 @@ message GetAllTransactionsRequest {
 }
 
 message GetAllTransactionsFilter {
-  string sourceCode = 1;
+  string source_code = 1;
   string account_number = 2;
-  string senderName = 3;
-  oneof transactionType {
+  string sender_name = 3;
+  oneof transaction_type {
     bool all = 4;
-    TransactionType specificType = 5;
+    TransactionType specific_type = 5;
   };
+  oneof transactionStatus {
+    bool allStatus = 6;
+    TransactionStatus status = 7;
+  }
 }
 
 message GetAllTransactionsResponse {
@@ -57,19 +61,26 @@ message GetAllTransactionsResponse {
 message Transaction {
   string id =1;
   string amount = 2;
-  TransactionType transactionType = 3;
-   string senderName = 4;
-  string receiverAccountNumber = 5;
-  string senderAccountNumber = 6;
+  TransactionType transaction_type = 3;
+   string sender_name = 4;
+  string receiver_account_number = 5;
+  string sender_account_number = 6;
   string sourceCode = 7;
   Wallet sender_wallet = 8;
   Wallet receiver_wallet = 9;
   string trf_ref = 10;
-  string created_at = 11;
-  string updated_at = 12;
+  TransactionStatus status = 11;
+  string created_at = 12;
+  string updated_at = 13;
 }
 
 enum TransactionType {
   CREDIT = 0;
   DEBIT = 1;
+}
+
+enum TransactionStatus {
+  PENDING = 0;
+  DECLINED = 1;
+  APPROVED = 2;
 }

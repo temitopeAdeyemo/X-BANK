@@ -1,6 +1,7 @@
 package com.xbank.walletservice.modules.transaction.repository;
 
 import com.xbank.walletservice.modules.transaction.entity.Transaction;
+import com.xbank.walletservice.modules.transaction.entity.TransactionStatus;
 import com.xbank.walletservice.modules.transaction.entity.TransactionType;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
@@ -12,7 +13,8 @@ public class TransactionSpecification {
         return Specification.where(hasAccountNumber(filter.getAccountNumber()))
                 .and(hasSourceCode(filter.getSourceCode()))
                 .and(hasSenderName(filter.getSenderName()))
-                .and(filter.hasAll()? setBothTransType(): hasTransactionType(filter.getSpecificType().toString()) );
+                .and(filter.hasAll()? setBothTransType(): hasTransactionType(filter.getSpecificType().toString()) )
+                .and(filter.hasAllStatus()? setAllStatus(): hasTransactionStatus(filter.getStatus().toString()) );
     }
 
     private static Specification<Transaction> hasSourceCode(String sourceCode) {
@@ -53,5 +55,19 @@ public class TransactionSpecification {
 
             return criteriaBuilder.or(credit, debit);
         };
+    }
+
+    private static Specification<Transaction> setAllStatus() {
+        return (root, criteriaQuery, criteriaBuilder)->{
+            Predicate approved = criteriaBuilder.equal(root.get("status"), TransactionStatus.APPROVED);
+            Predicate declined = criteriaBuilder.equal(root.get("status"), TransactionStatus.DECLINED);
+            Predicate pending = criteriaBuilder.equal(root.get("status"), TransactionStatus.PENDING);
+
+            return criteriaBuilder.or(approved, declined, pending);
+        };
+    }
+
+    private static Specification<Transaction> hasTransactionStatus(String transactionStatus) {
+        return (root, criteriaQuery, criteriaBuilder)-> criteriaBuilder.equal(root.get("status"), transactionStatus);
     }
 }

@@ -2,6 +2,7 @@ package com.xbank.walletservice.shared.mapper;
 
 
 import com.xbank.walletservice.modules.transaction.entity.Transaction;
+import proto.transaction.proto.TransactionStatus;
 import proto.transaction.proto.TransactionType;
 
 public class TransactionDataMapper {
@@ -17,6 +18,7 @@ public class TransactionDataMapper {
                 .setCreatedAt(String.valueOf(transaction.getCreatedAt()))
                 .setUpdatedAt(String.valueOf(transaction.getCreatedAt()))
                 .setId(String.valueOf(transaction.getId()))
+                .setStatus(TransactionStatus.forNumber(transaction.getStatus().ordinal()))
                 .build();
     }
 }

@@ -52,6 +52,8 @@ public class Transaction {
     @Column(name = "trf_ref")
     private String trfRef;
 
+    private TransactionStatus status;
+
 //    @ManyToOne
 //    @JoinColumn(name = "wallet")
 //    private Wallet wallet;
