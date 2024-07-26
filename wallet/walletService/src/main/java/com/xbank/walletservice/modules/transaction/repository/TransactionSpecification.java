@@ -52,8 +52,9 @@ public class TransactionSpecification {
         return (root, criteriaQuery, criteriaBuilder)->{
             Predicate credit = criteriaBuilder.equal(root.get("transaction_type"), TransactionType.CREDIT);
             Predicate debit = criteriaBuilder.equal(root.get("transaction_type"), TransactionType.DEBIT);
+            Predicate funding = criteriaBuilder.equal(root.get("transaction_type"), TransactionType.FUNDING);
 
-            return criteriaBuilder.or(credit, debit);
+            return criteriaBuilder.or(credit, debit, funding);
         };
     }
 

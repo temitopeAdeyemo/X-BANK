@@ -14,17 +14,19 @@ message FundWalletRequest {
 }
 
 message StatusResponse {
-  Status status = 1;
+  TransactionStatus status = 1;
+  string trf_ref = 2;
 }
 
 message FundTransferRequest {
   string user_id = 1;
   string account_number = 2;
-  string amount = 3;
+  int64 amount = 3;
 }
 
 message FundTransferResponse {
   string trf_ref = 1;
+  TransactionStatus status = 2;
 }
 
 message GetSingleTransactionRequest {
@@ -77,6 +79,7 @@ message Transaction {
 enum TransactionType {
   CREDIT = 0;
   DEBIT = 1;
+  FUNDING = 2;
 }
 
 enum TransactionStatus {

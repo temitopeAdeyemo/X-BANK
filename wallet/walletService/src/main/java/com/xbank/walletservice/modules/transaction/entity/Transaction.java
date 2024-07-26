@@ -49,7 +49,7 @@ public class Transaction {
     @Column(name = "source_code")
     private String sourceCode;
 
-    @Column(name = "trf_ref")
+    @Column(name = "trf_ref", length = 24)
     private String trfRef;
 
     private TransactionStatus status;
@@ -60,11 +60,11 @@ public class Transaction {
 
     @ManyToOne
     @JoinColumn(name = "sender_wallet")
-    private Wallet sender_wallet;
+    private Wallet senderWallet;
 
     @ManyToOne
     @JoinColumn(name = "receiver_wallet")
-    private Wallet receiver_wallet;
+    private Wallet receiverWallet;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at")
