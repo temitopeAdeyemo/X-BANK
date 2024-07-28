@@ -13,8 +13,8 @@ public class TransactionSpecification {
         return Specification.where(hasAccountNumber(filter.getAccountNumber()))
                 .and(hasSourceCode(filter.getSourceCode()))
                 .and(hasSenderName(filter.getSenderName()))
-                .and(filter.hasAll()? setBothTransType(): hasTransactionType(filter.getSpecificType().toString()) )
-                .and(filter.hasAllStatus()? setAllStatus(): hasTransactionStatus(filter.getStatus().toString()) );
+                .and(filter.hasAll()? setBothTransType(): hasTransactionType(filter.getSpecificType().toString(), filter.getAccountNumber()) )
+                .and(filter.getStatus().equals(proto.transaction.proto.TransactionStatus.ALL) ? setAllStatus(): hasTransactionStatus(filter.getStatus().toString()) );
     }
 
     private static Specification<Transaction> hasSourceCode(String sourceCode) {
@@ -25,9 +25,48 @@ public class TransactionSpecification {
         };
     }
 
-    private static Specification<Transaction> hasTransactionType(String transactionType) {
-        return (root, criteriaQuery, criteriaBuilder)-> criteriaBuilder.equal(root.get("transaction_type"), transactionType);
+    private static Specification<Transaction> hasTransactionType(String transactionType, String accountNumber) {
+        return (root, criteriaQuery, criteriaBuilder)-> {
+            if(transactionType.isEmpty()) return criteriaBuilder.conjunction();
+
+            Predicate xx = criteriaBuilder.conjunction();
+
+            if(transactionType.equals(String.valueOf(proto.transaction.proto.TransactionType.CREDIT)) && !accountNumber.isEmpty()) {
+                xx = criteriaBuilder.equal(root.get("receiverAccountNumber"), accountNumber);
+            }
+
+            if(transactionType.equals(String.valueOf(proto.transaction.proto.TransactionType.DEBIT)) && !accountNumber.isEmpty()) {
+                xx = criteriaBuilder.equal(root.get("senderAccountNumber"), accountNumber);
+            }
+
+            if(transactionType.equals(String.valueOf(proto.transaction.proto.TransactionType.FUND_TRANSFER)) && !accountNumber.isEmpty()) {
+                var cc = criteriaBuilder.equal(root.get("senderAccountNumber"), accountNumber);
+                var dd = criteriaBuilder.equal(root.get("receiverAccountNumber"), accountNumber);
+                Predicate transfer = criteriaBuilder.equal(root.get("transactionType"), TransactionType.FUND_TRANSFER);
+
+                var ff = criteriaBuilder.or(cc, dd);
+                xx = criteriaBuilder.and(ff, transfer);
+            }
+
+            if(transactionType.equals(String.valueOf(proto.transaction.proto.TransactionType.FUNDING)) && !accountNumber.isEmpty()) {
+                var dd = criteriaBuilder.equal(root.get("receiverAccountNumber"), accountNumber);
+                Predicate transfer = criteriaBuilder.equal(root.get("transactionType"), TransactionType.FUNDING);
+
+                xx = criteriaBuilder.and( dd, transfer);
+            }
+
+            if(transactionType.equals(String.valueOf(proto.transaction.proto.TransactionType.FUNDING)) && accountNumber.isEmpty()) {
+                 xx = criteriaBuilder.equal(root.get("transactionType"), TransactionType.FUNDING);
+            }
+
+            if(transactionType.equals(String.valueOf(proto.transaction.proto.TransactionType.FUND_TRANSFER)) && accountNumber.isEmpty()) {
+                xx = criteriaBuilder.equal(root.get("transactionType"), TransactionType.FUND_TRANSFER);
+            }
+
+            return xx;
+        };
     }
+
 
     private static Specification<Transaction> hasSenderName(String senderName) {
         return (root, criteriaQuery, criteriaBuilder)->{
@@ -41,8 +80,8 @@ public class TransactionSpecification {
         return (root, criteriaQuery, criteriaBuilder)->{
             if(accountNumber.isEmpty()) return criteriaBuilder.conjunction();
 
-            Predicate receiverAccNum = criteriaBuilder.equal(root.get("receiver_account_number"), accountNumber);
-            Predicate senderAccNum = criteriaBuilder.equal(root.get("sender_account_number"), accountNumber);
+            Predicate receiverAccNum = criteriaBuilder.equal(root.get("receiverAccountNumber"), accountNumber);
+            Predicate senderAccNum = criteriaBuilder.equal(root.get("senderAccountNumber"), accountNumber);
 
             return criteriaBuilder.or(receiverAccNum, senderAccNum);
         };
@@ -50,11 +89,11 @@ public class TransactionSpecification {
 
     private static Specification<Transaction> setBothTransType() {
         return (root, criteriaQuery, criteriaBuilder)->{
-            Predicate credit = criteriaBuilder.equal(root.get("transaction_type"), TransactionType.CREDIT);
-            Predicate debit = criteriaBuilder.equal(root.get("transaction_type"), TransactionType.DEBIT);
-            Predicate funding = criteriaBuilder.equal(root.get("transaction_type"), TransactionType.FUNDING);
 
-            return criteriaBuilder.or(credit, debit, funding);
+            Predicate transfer = criteriaBuilder.equal(root.get("transactionType"), TransactionType.FUND_TRANSFER);
+            Predicate funding = criteriaBuilder.equal(root.get("transactionType"), TransactionType.FUNDING);
+
+            return criteriaBuilder.and(transfer, funding);
         };
     }
 
@@ -69,6 +108,6 @@ public class TransactionSpecification {
     }
 
     private static Specification<Transaction> hasTransactionStatus(String transactionStatus) {
-        return (root, criteriaQuery, criteriaBuilder)-> criteriaBuilder.equal(root.get("status"), transactionStatus);
+        return (root, criteriaQuery, criteriaBuilder)-> criteriaBuilder.equal(root.get("status"), TransactionStatus.valueOf(transactionStatus));
     }
 }

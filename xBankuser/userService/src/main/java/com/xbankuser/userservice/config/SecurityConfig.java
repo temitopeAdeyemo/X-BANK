@@ -76,7 +76,7 @@ public class SecurityConfig {
         manualGrpcSecurityMetadataSource.set(AuthServiceGrpc.getAuthenticateUserMethod(), AccessPredicate.authenticated());
 
         manualGrpcSecurityMetadataSource.set(GetUserServiceGrpc.getGetAllUsersMethod(), AccessPredicate.authenticated());
-        manualGrpcSecurityMetadataSource.set(GetUserServiceGrpc.getGetUserByUniqueFieldMethod(), AccessPredicate.authenticated());
+//        manualGrpcSecurityMetadataSource.set(GetUserServiceGrpc.getGetUserByUniqueFieldMethod(), AccessPredicate.authenticated());
         manualGrpcSecurityMetadataSource.set(UpdateUserServiceGrpc.getUpdateUserMethod(), AccessPredicate.authenticated());
 
 

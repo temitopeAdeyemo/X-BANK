@@ -7,24 +7,25 @@ import "google/protobuf/any.proto";
 import "google/protobuf/timestamp.proto";
 import "user.proto";
 import "wallet.proto";
+import "getUser.proto";
 
 message FundWalletRequest {
   string user_id = 1;
-  string amount = 2;
-}
-
-message StatusResponse {
-  TransactionStatus status = 1;
-  string trf_ref = 2;
+  int64 amount = 2;
 }
 
 message FundTransferRequest {
   string user_id = 1;
   string account_number = 2;
   int64 amount = 3;
+  string source_code = 4;
+  User senderData = 5;
+  User receiverData = 6;
 }
 
-message FundTransferResponse {
+
+
+message FundDepositResponse {
   string trf_ref = 1;
   TransactionStatus status = 2;
 }
@@ -50,10 +51,7 @@ message GetAllTransactionsFilter {
     bool all = 4;
     TransactionType specific_type = 5;
   };
-  oneof transactionStatus {
-    bool allStatus = 6;
-    TransactionStatus status = 7;
-  }
+  TransactionStatus status = 6;
 }
 
 message GetAllTransactionsResponse {
@@ -72,18 +70,22 @@ message Transaction {
   Wallet receiver_wallet = 9;
   string trf_ref = 10;
   TransactionStatus status = 11;
-  string created_at = 12;
-  string updated_at = 13;
+  string StatusDescription = 12;
+  string receiver_name = 13;
+  string created_at = 14;
+  string updated_at = 15;
 }
 
 enum TransactionType {
   CREDIT = 0;
   DEBIT = 1;
-  FUNDING = 2;
+  FUND_TRANSFER = 2;
+  FUNDING = 3;
 }
 
 enum TransactionStatus {
-  PENDING = 0;
-  DECLINED = 1;
-  APPROVED = 2;
+  ALL = 0;
+  PENDING = 1;
+  DECLINED = 2;
+  APPROVED = 3;
 }

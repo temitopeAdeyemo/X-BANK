@@ -15,8 +15,10 @@ import net.devh.boot.grpc.server.advice.GrpcExceptionHandler;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.transaction.TransactionSystemException;
 
+import java.util.Arrays;
+
 @GrpcAdvice
-public class UserAdvice {
+public class WalletAdvice {
     @GrpcExceptionHandler(AuthenticationException.class)
     public static StatusRuntimeException handleAuthenticationException(AuthenticationException ex){
         Status status = Status
@@ -83,7 +85,7 @@ public class UserAdvice {
     public static StatusRuntimeException handleEntityNotFoundException(EntityNotFoundException ex){
         Status status = Status
                 .newBuilder().setMessage(ex.getMessage()).
-                setCode(Code.INTERNAL_VALUE)
+                setCode(Code.NOT_FOUND_VALUE)
                 .addDetails(
                         Any.pack(
                                 ErrorInfo.newBuilder()
@@ -97,17 +99,94 @@ public class UserAdvice {
         return StatusProto.toStatusRuntimeException(status);
     }
 
+    @GrpcExceptionHandler(InsufficientBalanceException.class)
+    public static StatusRuntimeException handleInsufficientBalanceException(InsufficientBalanceException ex){
+        var msg = ex.getMessage().isEmpty()? "Insufficient Balance.": ex.getMessage();
+        Status status = Status
+                .newBuilder().setMessage(msg).
+                setCode(Code.FAILED_PRECONDITION_VALUE)
+                .addDetails(
+                        Any.pack(
+                                ErrorInfo.newBuilder()
+                                        .setReason("NOT_FOUND")
+                                        .setDomain("com.x-bank.walletService")
+                                        .build()
+                        )
+                )
+                .build();
+
+        return StatusProto.toStatusRuntimeException(status);
+    }
+
+    @GrpcExceptionHandler(UpstreamlServiceException.class)
+    public static StatusRuntimeException handleUpstreamlServiceExceptionn(UpstreamlServiceException ex){
+        var msg = ex.getMessage().isEmpty()? ex.getMessage(): "Could not handle user request.";
+        Status status = Status
+                .newBuilder().setMessage(msg).
+                setCode(Code.FAILED_PRECONDITION_VALUE)
+                .addDetails(
+                        Any.pack(
+                                ErrorInfo.newBuilder()
+                                        .setReason(msg.isEmpty()? "UPSTREAM_ERROR": ex.getMessage())
+                                        .setDomain("com.x-bank.walletService")
+                                        .build()
+                        )
+                )
+                .build();
+
+        return StatusProto.toStatusRuntimeException(status);
+    }
+
+    @GrpcExceptionHandler(CredentialExistsException.class)
+    public static StatusRuntimeException handleCredentialExistsException(CredentialExistsException ex){
+        var msg = ex.getMessage().isEmpty()? ex.getMessage(): "Credential exists.";
+        Status status = Status
+                .newBuilder().setMessage(msg).
+                setCode(Code.ALREADY_EXISTS_VALUE)
+                .addDetails(
+                        Any.pack(
+                                ErrorInfo.newBuilder()
+                                        .setReason(msg.isEmpty()? "Credential exists": ex.getMessage())
+                                        .setDomain("com.x-bank.walletService")
+                                        .build()
+                        )
+                )
+                .build();
+
+        return StatusProto.toStatusRuntimeException(status);
+    }
+
+    @GrpcExceptionHandler(TransactionDeclinedException.class)
+    public static StatusRuntimeException handleTransactionDeclinedException(TransactionDeclinedException ex){
+        var msg = ex.getMessage().isEmpty()? "Invalid amount.": ex.getMessage();
+        Status status = Status
+                .newBuilder().setMessage(msg).
+                setCode(Code.FAILED_PRECONDITION_VALUE)
+                .addDetails(
+                        Any.pack(
+                                ErrorInfo.newBuilder()
+                                        .setReason("INVALID_AMOUNT")
+                                        .setDomain("com.x-bank.walletService")
+                                        .build()
+                        )
+                )
+                .build();
+
+        return StatusProto.toStatusRuntimeException(status);
+    }
+
     @GrpcExceptionHandler(Exception.class)
     public static StatusRuntimeException handleAllExceptions(Exception ex) {
-        System.out.println(ex);
-       String defaultErrorMessage =  ex.getMessage() != null? ex.getMessage():"SERVER ERROR:";
+       String defaultErrorMessage =  ex.getMessage() != null? ex.getMessage():"SERVER ERROR";
+        System.out.println(defaultErrorMessage);
+        System.out.println(Arrays.toString(ex.getStackTrace()));
         Status status = Status
                 .newBuilder().setMessage("SERVER ERROR!").
                 setCode(Code.INTERNAL_VALUE)
                 .addDetails(
                         Any.pack(
                                 ErrorInfo.newBuilder()
-                                        .setReason(defaultErrorMessage )
+                                        .setReason("SERVER_ERROR")
                                         .setDomain("com.x-bank.walletService")
                                         .putMetadata("message", defaultErrorMessage)
                                         .build()

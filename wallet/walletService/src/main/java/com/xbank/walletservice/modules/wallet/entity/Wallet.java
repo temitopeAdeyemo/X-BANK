@@ -4,11 +4,8 @@ import com.xbank.walletservice.modules.transaction.entity.Transaction;
 import com.xbank.walletservice.shared.utils.AccountNumberGenerator;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import javax.annotation.Nullable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -16,10 +13,10 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@Getter
+@Setter
 @Entity
 @Table(name = "xbank_wallet", indexes = {
         @Index(name = "idx_wallet_id", columnList = "id"),
@@ -46,21 +43,17 @@ public class Wallet {
     @Column(name = "user_id", unique = true)
     private UUID userId;
 
-//    @OneToMany(mappedBy = "wallet", orphanRemoval = true, cascade = {CascadeType.ALL, /*CascadeType.DETACH,*/ CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH})
-//    private Set<Transaction> transactions = new HashSet<>();
+    @OneToMany(mappedBy = "senderWallet", orphanRemoval = true, cascade = { CascadeType.ALL /*CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH*/ /*, CascadeType.DETACH*/}, fetch = FetchType.LAZY)
+    private Set<Transaction> debitTransactions = new HashSet<>();
 
-    @OneToMany(mappedBy = "sender_wallet", orphanRemoval = true, cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH /*, CascadeType.DETACH*/}, fetch = FetchType.LAZY)
-    private Set<Transaction> debit_transactions = new HashSet<>();
+    @OneToMany(mappedBy = "receiverWallet", orphanRemoval = true, cascade = { CascadeType.ALL/*CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH*/ /*, CascadeType.DETACH*/}, fetch = FetchType.LAZY)
+    private Set<Transaction> creditTransactions = new HashSet<>();
 
-    @OneToMany(mappedBy = "receiver_wallet", orphanRemoval = true, cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH /*, CascadeType.DETACH*/}, fetch = FetchType.LAZY)
-    private Set<Transaction> credit_transactions = new HashSet<>();
-
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false, updatable = false)
+    @CreationTimestamp
     private Date createdAt;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "updated_at")
+    @Column(name = "updated_at", nullable = false, updatable = false)
+    @CreationTimestamp
     private Date updatedAt;
 }

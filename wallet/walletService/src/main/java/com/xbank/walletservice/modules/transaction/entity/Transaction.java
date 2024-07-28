@@ -2,10 +2,9 @@ package com.xbank.walletservice.modules.transaction.entity;
 
 import com.xbank.walletservice.modules.wallet.entity.Wallet;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+
 import javax.annotation.Nonnegative;
 import javax.annotation.Nullable;
 import java.math.BigDecimal;
@@ -14,8 +13,10 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-@Data
+//@Builder
+//@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "xbank_transactions", indexes = {
         @Index(name = "idx_trans_id", columnList = "id"),
@@ -37,11 +38,14 @@ public class Transaction {
     @Column(name = "transaction_type")
     private TransactionType transactionType;
 
-    @Column(name = "sender_name")
-    private String senderName;
-
     @Column(name = "receiver_account_number")
     private String receiverAccountNumber;
+
+    @Transient
+    private String sender_name;
+
+    @Transient
+    private String receiver_name;
 
     @Column(name = "sender_account_number")
     private String senderAccountNumber;
@@ -54,24 +58,23 @@ public class Transaction {
 
     private TransactionStatus status;
 
-//    @ManyToOne
-//    @JoinColumn(name = "wallet")
-//    private Wallet wallet;
+    @Column(name = "status_description")
+    private String statusDescription;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sender_wallet")
     private Wallet senderWallet;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "receiver_wallet")
     private Wallet receiverWallet;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false, updatable = false)
+    @CreationTimestamp
     private Date createdAt;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "updated_at")
+    @Column(name = "updated_at", nullable = false, updatable = false)
+    @CreationTimestamp
     private Date updatedAt;
 }
 

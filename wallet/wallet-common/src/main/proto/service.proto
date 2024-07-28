@@ -25,8 +25,8 @@ service DeleteWalletService {
 }
 
 service TransactionInitService {
-    rpc FundWallet (FundWalletRequest) returns (StatusResponse){}
-  rpc FundTransfer (FundTransferRequest) returns (FundTransferResponse){}
+    rpc FundWallet (FundWalletRequest) returns (FundDepositResponse){}
+  rpc FundTransfer (FundTransferRequest) returns (FundDepositResponse){}
 }
 
 service GetTransactionService {

@@ -1,6 +1,7 @@
 package com.xbank.walletservice.modules.wallet.service;
 
 import com.xbank.walletservice.modules.wallet.repository.WalletRepository;
+import com.xbank.walletservice.shared.utils.ResponseHandler;
 import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
 import net.devh.boot.grpc.server.service.GrpcService;
@@ -18,7 +19,6 @@ public class DeleteWallet extends DeleteWalletServiceGrpc.DeleteWalletServiceImp
     public void deleteWallet(DeleteWalletRequest request, StreamObserver<Empty> responseObserver) {
         this.walletRepository.deleteById(UUID.fromString(request.getId()));
 
-        responseObserver.onNext(Empty.newBuilder().build());
-        responseObserver.onCompleted();
+        new ResponseHandler<Empty>().sendSync(responseObserver, Empty.newBuilder().build());
     }
 }

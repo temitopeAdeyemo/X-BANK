@@ -50,7 +50,10 @@ message GetWalletFilter {
 }
 
 message GetBalanceRequest {
-  string account_number = 1;
+  oneof data {
+    string id = 1;
+    string account_number = 2;
+  }
 }
 
 message GetBalanceResponse {
