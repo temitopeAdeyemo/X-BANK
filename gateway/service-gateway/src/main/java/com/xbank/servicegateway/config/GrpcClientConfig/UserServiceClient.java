@@ -8,7 +8,7 @@ import proto.service.proto.GetUserServiceGrpc;
 import proto.service.proto.RegisterServiceGrpc;
 
 @Configuration
-public class UserService {
+public class UserServiceClient {
     @Bean
     ManagedChannel userChannel (){
         return ManagedChannelBuilder.forAddress("localhost", 90001 ).usePlaintext().build();
