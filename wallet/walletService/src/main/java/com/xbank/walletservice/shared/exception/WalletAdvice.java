@@ -50,13 +50,13 @@ public class WalletAdvice {
                 .setMessage(msg)
                 .setCode(Code.UNAUTHENTICATED_VALUE)
                 .addDetails(
-                        Any.pack(
-                                (ErrorInfo.newBuilder()
-                                        .setReason(ex.getMessage())
-                                        .setDomain("com.x-bank.walletService")
-                                        .build()
-                                )
+                    Any.pack(
+                        (ErrorInfo.newBuilder()
+                            .setReason(ex.getMessage())
+                            .setDomain("com.x-bank.walletService")
+                            .build()
                         )
+                    )
                 )
                 .build();
 

@@ -19,7 +19,13 @@ public class RedissonConfig {
     @Bean(destroyMethod = "shutdown")
     public RedissonClient redissonClient() {
         Config config = new Config();
-        config.useSingleServer().setAddress("redis://" + redisHost + ":" + redisPort);
+        config.useSingleServer()
+                .setAddress("redis://" + redisHost + ":" + redisPort)
+                /* Default Connection Pool Size is 24, more connection pool size allow higher concurrent operations.
+                If the application has many simultaneous Redis operations, having 24 connections will handle the load better without queuing requests.
+                 Also reduce latency.*/
+                .setConnectionPoolSize(2)
+                .setConnectionMinimumIdleSize(2);
         return Redisson.create(config);
     }
 }

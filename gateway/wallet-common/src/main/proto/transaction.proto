@@ -1,0 +1,91 @@
+syntax = "proto3";
+package wallet;
+option java_multiple_files= true;
+option java_package = "proto.transaction.proto";
+option java_outer_classname = "transactionProto";
+import "google/protobuf/any.proto";
+import "google/protobuf/timestamp.proto";
+import "user.proto";
+import "wallet.proto";
+import "getUser.proto";
+
+message FundWalletRequest {
+  string user_id = 1;
+  int64 amount = 2;
+}
+
+message FundTransferRequest {
+  string user_id = 1;
+  string account_number = 2;
+  int64 amount = 3;
+  string source_code = 4;
+  User senderData = 5;
+  User receiverData = 6;
+}
+
+
+
+message FundDepositResponse {
+  string trf_ref = 1;
+  TransactionStatus status = 2;
+}
+
+message GetSingleTransactionRequest {
+  oneof filter_by {
+    string trf_ref = 1;
+    string id = 2;
+  }
+}
+
+message GetAllTransactionsRequest {
+  int32 page = 1;
+  int32 size = 2;
+  GetAllTransactionsFilter filterBy = 3;
+}
+
+message GetAllTransactionsFilter {
+  string source_code = 1;
+  string account_number = 2;
+  string sender_name = 3;
+  oneof transaction_type {
+    bool all = 4;
+    TransactionType specific_type = 5;
+  };
+  TransactionStatus status = 6;
+}
+
+message GetAllTransactionsResponse {
+  repeated Transaction transactions = 1;
+}
+
+message Transaction {
+  string id =1;
+  string amount = 2;
+  TransactionType transaction_type = 3;
+   string sender_name = 4;
+  string receiver_account_number = 5;
+  string sender_account_number = 6;
+  string sourceCode = 7;
+  Wallet sender_wallet = 8;
+  Wallet receiver_wallet = 9;
+  string trf_ref = 10;
+  TransactionStatus status = 11;
+  string StatusDescription = 12;
+  string receiver_name = 13;
+  string created_at = 14;
+  string updated_at = 15;
+}
+
+enum TransactionType {
+  CREDIT = 0;
+  DEBIT = 1;
+  FUND_TRANSFER = 2;
+  FUNDING = 3;
+}
+
+enum TransactionStatus {
+  ALL = 0;
+  PENDING = 1;
+  DECLINED = 2;
+  APPROVED = 3;
+}

@@ -1,16 +1,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.x-gate</groupId>
-	<artifactId>x-gate</artifactId>
+	<groupId>com.xbank</groupId>
+	<artifactId>gateway</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>x-gate</name>
-	<packaging>pom</packaging>
-
+	<name>xBankWalletService</name>
+	<description>x-wallet Application</description>
 	<modules>
-		<module>transaction-common</module>
-		<module>user-common</module>
 		<module>wallet-common</module>
-		<module>service-gateway</module>
-		<!--        <module>transaction-service</module>-->
+		<module>user-common</module>
 	</modules>
+	<packaging>pom</packaging>
 </project>
