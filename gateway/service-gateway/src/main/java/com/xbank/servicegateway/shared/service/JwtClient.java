@@ -8,7 +8,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
+//import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
@@ -56,33 +56,33 @@ public class JwtClient {
     //    public String generateToken( UserDetails userDetails){
 //        return generateToken(new HashMap<>(), userDetails);
 //    }
-    public String generateToken( UserDetails userDetails){
-        Instant now = Instant.now();
-        Instant expiresAt = now.plus(Integer.parseInt(TOKEN_EXPIRATION_PERIOD), ChronoUnit.HOURS);
-        Map<String, Object> extractClaims = new HashMap<>();
-        System.out.println("*********************    16");
-        JwtBuilder jwtBuilder = Jwts.builder();
-        System.out.println("*********************    17");
-        JwtBuilder setJwtClaims = jwtBuilder.setClaims(extractClaims);
-        System.out.println("*********************    18");
-        JwtBuilder setJwtSubject =  setJwtClaims.setSubject(userDetails.getUsername());
-        System.out.println("*********************    19");
-        JwtBuilder setJwtIssuedAt = setJwtSubject.setIssuedAt(Date.from(now));
-        System.out.println("*********************    20");
-        JwtBuilder setJwtExpiration = setJwtIssuedAt.setExpiration(Date.from(expiresAt));
+//    public String generateToken( UserDetails userDetails){
+//        Instant now = Instant.now();
+//        Instant expiresAt = now.plus(Integer.parseInt(TOKEN_EXPIRATION_PERIOD), ChronoUnit.HOURS);
+//        Map<String, Object> extractClaims = new HashMap<>();
+//        System.out.println("*********************    16");
+//        JwtBuilder jwtBuilder = Jwts.builder();
+//        System.out.println("*********************    17");
+//        JwtBuilder setJwtClaims = jwtBuilder.setClaims(extractClaims);
+//        System.out.println("*********************    18");
+//        JwtBuilder setJwtSubject =  setJwtClaims.setSubject(userDetails.getUsername());
+//        System.out.println("*********************    19");
+//        JwtBuilder setJwtIssuedAt = setJwtSubject.setIssuedAt(Date.from(now));
+//        System.out.println("*********************    20");
+//        JwtBuilder setJwtExpiration = setJwtIssuedAt.setExpiration(Date.from(expiresAt));
+//
+//        JwtBuilder sign = setJwtExpiration.signWith(getSignInKey(), SignatureAlgorithm.HS256);
+//        System.out.println("*********************    21");
+//        return sign.compact();
+//    }
 
-        JwtBuilder sign = setJwtExpiration.signWith(getSignInKey(), SignatureAlgorithm.HS256);
-        System.out.println("*********************    21");
-        return sign.compact();
-    }
-
-    public boolean isTokenValid(String token, UserDetails userDetails){
-        System.out.println("*********************    22");
-        final String username = extractUsername(token);
-        System.out.println("*********************    23");
-        System.out.println("*********************    24" + (username.equals((userDetails.getUsername())) && isTokenExired(token)));
-        return (username.equals((userDetails.getUsername())) && isTokenExired(token));
-    }
+//    public boolean isTokenValid(String token, UserDetails userDetails){
+//        System.out.println("*********************    22");
+//        final String username = extractUsername(token);
+//        System.out.println("*********************    23");
+//        System.out.println("*********************    24" + (username.equals((userDetails.getUsername())) && isTokenExired(token)));
+//        return (username.equals((userDetails.getUsername())) && isTokenExired(token));
+//    }
 
     private boolean isTokenExired(String token) {
         System.out.println(extractExpiration(token).before(new Date()) + "Checking if token expired *********************    25");
@@ -104,10 +104,13 @@ public class JwtClient {
 
     public String getClientId(HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
+        System.out.println("??????????????????? "+ request.getHeader("Authorization"));
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            System.out.println(":::::::::::::::::::::::>> "+ authHeader.substring(7));
             String token = authHeader.substring(7);
             return extractAllClaims(token).getSubject();
         } else {
+            System.out.println(".............."+ request.getParameter("email"));
             return request.getParameter("email"); // Fall back to email parameter
         }
     }
