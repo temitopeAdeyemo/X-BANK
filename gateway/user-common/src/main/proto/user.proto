@@ -30,6 +30,7 @@ message LoginRequest {
 
 message SignupResponse {
   Status status = 1;
+  string id = 2;
 }
 
 message LoginResponse {

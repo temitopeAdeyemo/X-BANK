@@ -41,11 +41,11 @@ public class SecurityConfig {
     private final JwtAuthProvider jwtAuthProvider;
     private final JwtService jwtService;
 
-    @Bean
-    public PasswordEncoder passwordEncoder()
-    {
-        return new BCryptPasswordEncoder();
-    }
+//    @Bean
+//    public PasswordEncoder passwordEncoder()
+//    {
+//        return new BCryptPasswordEncoder();
+//    }
 
     @Bean
     GrpcAuthenticationReader grpcAuthenticationReader (){

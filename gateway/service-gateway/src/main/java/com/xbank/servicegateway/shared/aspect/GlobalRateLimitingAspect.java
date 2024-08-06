@@ -19,6 +19,8 @@ import org.redisson.api.RedissonClient;
 import org.redisson.api.RateType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
 
 //import javax.servlet.http.HttpServletRequest;
 
@@ -38,13 +40,19 @@ public class GlobalRateLimitingAspect {
 
     @Before("@annotation(rateLimited)")
     public void beforeRequest(RateLimited rateLimited) {
+//        String requestBody = (String) RequestContextHolder.getRequestAttributes()
+//                .getAttribute("cachedRequestBody", RequestAttributes.SCOPE_REQUEST);
+//        System.out.println(":::::::::::"+ requestBody);
+        System.out.println("----------------------------------------");
         String clientId = jwtUtil.getClientId(request);
         String endpoint = rateLimited.endpoint();
+        Integer point = rateLimited.point();
         long interval = rateLimited.interval();
         RateIntervalUnit intervalUnit = rateLimited.unit();
 
         String key = clientId + ":" + endpoint;
-        this.rateLimiter.exec(key, interval, intervalUnit);
+        System.out.println("::::::::::::::::::::: "+ key);
+        this.rateLimiter.exec(key, interval, intervalUnit, point);
 //        RRateLimiter rateLimiter = redissonClient.getRateLimiter(key);
 //        rateLimiter.trySetRate(RateType.OVERALL, 1, interval, intervalUnit);
 //

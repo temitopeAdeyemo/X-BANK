@@ -37,7 +37,7 @@ public class User implements UserDetails {
 
     @NotBlank
     @NotNull
-    @Size(min = 11, max = 14, message = "Phone number cannot be less than 14 digits and lesser than 10 digits")
+    @Size(min = 10, max = 14, message = "Phone number cannot be less than 14 digits and lesser than 10 digits")
     @Column(name = "phone_number")
     private String phoneNumber;
 

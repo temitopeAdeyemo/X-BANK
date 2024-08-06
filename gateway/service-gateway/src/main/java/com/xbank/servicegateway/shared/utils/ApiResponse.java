@@ -9,7 +9,7 @@ import java.time.ZonedDateTime;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ApiResponse {
+public class ApiResponse<T> {
     @JsonProperty("timezone")
     public ZonedDateTime timezone;
 
@@ -19,9 +19,13 @@ public class ApiResponse {
     @JsonProperty("message")
     public String message;
 
-    public ApiResponse(String message){
+    @JsonProperty("data")
+    public T data;
+
+    public ApiResponse(String message, T data){
         this.message = message;
         this.success = true;
+        this.data = data;
         this.timezone = ZonedDateTime.now(ZoneId.of("Z"));
     }
 }

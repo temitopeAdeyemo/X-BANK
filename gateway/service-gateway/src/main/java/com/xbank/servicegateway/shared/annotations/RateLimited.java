@@ -10,6 +10,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface RateLimited {
     String endpoint();
-    long interval();
+    long interval() default 10;
+
+    int point() default 5;
     RateIntervalUnit unit() default RateIntervalUnit.SECONDS;
 }

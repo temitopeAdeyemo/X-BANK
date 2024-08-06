@@ -5,13 +5,14 @@ import io.grpc.ManagedChannelBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import proto.service.proto.GetUserServiceGrpc;
+import proto.service.proto.AuthServiceGrpc;
 import proto.service.proto.RegisterServiceGrpc;
 
 @Configuration
 public class UserServiceClient {
     @Bean
     ManagedChannel userChannel (){
-        return ManagedChannelBuilder.forAddress("localhost", 90001 ).usePlaintext().build();
+        return ManagedChannelBuilder.forAddress("localhost", 2022 ).usePlaintext().build();
     }
 
     @Bean
@@ -22,5 +23,10 @@ public class UserServiceClient {
     @Bean
     RegisterServiceGrpc.RegisterServiceBlockingStub registerUser(ManagedChannel managedChannel){
         return RegisterServiceGrpc.newBlockingStub(managedChannel);
+    }
+
+    @Bean
+    AuthServiceGrpc.AuthServiceBlockingStub loginUser(ManagedChannel managedChannel){
+        return AuthServiceGrpc.newBlockingStub(managedChannel);
     }
 }

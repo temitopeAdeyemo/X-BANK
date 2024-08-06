@@ -1,170 +1,78 @@
 package com.xbank.servicegateway.shared.Exceptions;
 
-import com.google.protobuf.Any;
-import com.google.rpc.Code;
-import com.google.rpc.ErrorInfo;
-import com.google.rpc.Status;
-import io.grpc.StatusRuntimeException;
-import io.grpc.protobuf.StatusProto;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.security.SignatureException;
-import jakarta.validation.ConstraintViolationException;
-import net.devh.boot.grpc.server.advice.GrpcAdvice;
-import net.devh.boot.grpc.server.advice.GrpcExceptionHandler;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.transaction.TransactionSystemException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
-@GrpcAdvice
+@ControllerAdvice
 public class GatewayAdvice {
-    @GrpcExceptionHandler(AuthenticationException.class)
-    public static StatusRuntimeException handleAuthenticationException(AuthenticationException ex){
-        Status status = Status
-                .newBuilder()
-                .setMessage(ex.getMessage())
-                .setCode(Code.UNAUTHENTICATED_VALUE)
-                .addDetails(
-                        Any.pack(
-                                (ErrorInfo.newBuilder()
-                                        .setReason(ex.getMessage())
-                                        .setDomain("com.x-bank.walletService")
-                                        .build()
-                                )
-                        )
-                )
-                .build();
+    @ExceptionHandler(value = {ApiRequestException.class})
+    public ResponseEntity<Object> handleApiException(ApiRequestException e){
+        HttpStatus badRequest = HttpStatus.BAD_REQUEST;
 
-        return StatusProto.toStatusRuntimeException(status);
+        ApiException<Object> apiException = new ApiException<>(e.getMessage(), null);
+
+        return new ResponseEntity<>(apiException, badRequest);
     }
 
-    @GrpcExceptionHandler(JwtException.class)
-    public static StatusRuntimeException handleJwtException(JwtException ex){
-        String msg = ex.getMessage();
-        if(ex.getClass().equals(SignatureException.class)) msg = "INVALID SIGNATURE / TOKEN.";
-        if(ex.getClass().equals(ExpiredJwtException.class)) msg = "TOKEN EXPIRED.";
+    @ExceptionHandler(value = {UpstreamlServiceException.class})
+    public ResponseEntity<Object> handleUpstreamlServiceException(UpstreamlServiceException e){
+        HttpStatus badRequest = HttpStatus.BAD_REQUEST;
 
-        Status status = Status
-                .newBuilder()
-                .setMessage(msg)
-                .setCode(Code.UNAUTHENTICATED_VALUE)
-                .addDetails(
-                    Any.pack(
-                        (ErrorInfo.newBuilder()
-                            .setReason(ex.getMessage())
-                            .setDomain("com.x-bank.walletService")
-                            .build()
-                        )
-                    )
-                )
-                .build();
+        ApiException<Object> apiException = new ApiException<>(e.getMessage(), null);
 
-        return StatusProto.toStatusRuntimeException(status);
+        return new ResponseEntity<>(apiException, badRequest);
     }
 
-    @GrpcExceptionHandler(ServerErrorException.class)
-    public static StatusRuntimeException handleServerErrorException(ServerErrorException ex){
-        Status status = Status
-                .newBuilder().setMessage("INTERNAL_SERVER_ERROR").
-                setCode(Code.INTERNAL_VALUE)
-                .addDetails(
-                        Any.pack(
-                                ErrorInfo.newBuilder()
-                                        .setReason("INTERNAL_SERVER_ERROR")
-                                        .setDomain("com.x-bank.walletService")
-                                .build()
-                        )
-                )
-                .build();
 
-        return StatusProto.toStatusRuntimeException(status);
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+
+    @ExceptionHandler(value = {MethodArgumentNotValidException.class})
+    public ResponseEntity<ApiException<Map<String, String>>> handleInvalidArgument(MethodArgumentNotValidException ex){
+        Map<String, String> errorMap = new HashMap<>();
+
+        ex.getBindingResult().getFieldErrors().forEach(e -> {
+            errorMap.put(e.getField(), e.getDefaultMessage());
+        });
+
+        ApiException<Map<String, String>> apiException = new ApiException<>("VALIDATION FAILED.", errorMap );
+
+        return new ResponseEntity<>( apiException, HttpStatus.BAD_REQUEST);
     }
 
-    @GrpcExceptionHandler(RateLimitExceededException.class)
-    public static StatusRuntimeException handleRateLimitExceededException(RateLimitExceededException ex){
-        Status status = Status
-                .newBuilder().setMessage(ex.getMessage()).
-                setCode(Code.NOT_FOUND_VALUE)
-                .addDetails(
-                        Any.pack(
-                                ErrorInfo.newBuilder()
-                                        .setReason("NOT_FOUND")
-                                        .setDomain("com.x-bank.walletService")
-                                        .build()
-                        )
-                )
-                .build();
+    @ResponseStatus(HttpStatus.NOT_FOUND)
 
-        return StatusProto.toStatusRuntimeException(status);
+    @ExceptionHandler(value = {HttpRequestMethodNotSupportedException.class})
+    public ResponseEntity<ApiException<Object>> handleInvalidArgument(HttpRequestMethodNotSupportedException ex){
+        return new ResponseEntity<>( new ApiException<>("Page Not Found", null), HttpStatus.NOT_FOUND);
     }
 
-    @GrpcExceptionHandler(UpstreamlServiceException.class)
-    public static StatusRuntimeException handleUpstreamlServiceExceptionn(UpstreamlServiceException ex){
-        var msg = ex.getMessage().isEmpty()? ex.getMessage(): "Could not handle user request.";
-        Status status = Status
-                .newBuilder().setMessage(msg).
-                setCode(Code.FAILED_PRECONDITION_VALUE)
-                .addDetails(
-                        Any.pack(
-                                ErrorInfo.newBuilder()
-                                        .setReason(msg.isEmpty()? "UPSTREAM_ERROR": ex.getMessage())
-                                        .setDomain("com.x-bank.walletService")
-                                        .build()
-                        )
-                )
-                .build();
+    @ResponseStatus(HttpStatus.NOT_FOUND)
 
-        return StatusProto.toStatusRuntimeException(status);
+    @ExceptionHandler(value = {ResourceNotFoundException.class})
+    public ResponseEntity<ApiException<Object>> handlePathException(ResourceNotFoundException ex){
+        return new ResponseEntity<>(new ApiException<>("Page Not Found", null), HttpStatus.NOT_FOUND);
     }
 
-    @GrpcExceptionHandler(Exception.class)
-    public static StatusRuntimeException handleAllExceptions(Exception ex) {
-       String defaultErrorMessage =  ex.getMessage() != null? ex.getMessage():"SERVER ERROR";
-        System.out.println(defaultErrorMessage);
-        System.out.println(Arrays.toString(ex.getStackTrace()));
-        Status status = Status
-                .newBuilder().setMessage("SERVER ERROR!").
-                setCode(Code.INTERNAL_VALUE)
-                .addDetails(
-                        Any.pack(
-                                ErrorInfo.newBuilder()
-                                        .setReason("SERVER_ERROR")
-                                        .setDomain("com.x-bank.walletService")
-                                        .putMetadata("message", defaultErrorMessage)
-                                        .build()
-                        )
-                )
-                .build();
+    @ResponseStatus(HttpStatus.NOT_FOUND)
 
-        return StatusProto.toStatusRuntimeException(status);
+    @ExceptionHandler(value = {MethodArgumentTypeMismatchException.class})
+    public ResponseEntity<ApiException<Object>> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex){
+        return new ResponseEntity<>( new ApiException<>("Invalid Parameter", null), HttpStatus.NOT_FOUND);
     }
 
-    @GrpcExceptionHandler(TransactionSystemException.class)
-    public StatusRuntimeException handleConstraintViolationException(TransactionSystemException ex) {
-        Throwable cause = ex.getRootCause();
-
-        String message = "";
-        if (cause instanceof ConstraintViolationException) {
-            var violation = ((ConstraintViolationException) cause).getConstraintViolations().iterator().next();
-            message = violation.getPropertyPath() + ": " + violation.getMessage();
-
-        }
-
-        Status status = Status
-                .newBuilder().setMessage(message).
-                setCode(Code.INTERNAL_VALUE)
-                .addDetails(
-                        Any.pack(
-                                ErrorInfo.newBuilder()
-                                        .setReason("JPA ERROR")
-                                        .setDomain("com.x-bank.walletService")
-                                        .build()
-                        )
-                )
-                .build();
-
-        return StatusProto.toStatusRuntimeException(status);
+    @ResponseStatus(HttpStatus.TOO_MANY_REQUESTS)
+    @ExceptionHandler(value = {RateLimitExceededException.class})
+    public ResponseEntity<ApiException<Object>> handleRateLimitExceededException(RateLimitExceededException ex){
+        return new ResponseEntity<>( new ApiException<>(ex.getMessage(), null), HttpStatus.TOO_MANY_REQUESTS);
     }
+
 }
-

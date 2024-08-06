@@ -17,9 +17,13 @@ public class RateLimiter {
     RateLimiter(RedissonClient redisson){
         this.redissonClient = redisson;
     }
-    public void exec(String key ,long interval, RateIntervalUnit intervalUnit){
+
+    public void exec(String key ,long interval, RateIntervalUnit intervalUnit, Integer point){
+        point = point.toString().isEmpty()? 5 : point;
+
         RRateLimiter rateLimiter = redissonClient.getRateLimiter(key);
-        rateLimiter.trySetRate(RateType.OVERALL, 1, interval, intervalUnit);
+        System.out.println(RateType.OVERALL + ".." + point + ".." + interval + ".." + intervalUnit);
+        rateLimiter.trySetRate(RateType.OVERALL, point, interval, intervalUnit);
 
         if (!rateLimiter.tryAcquire()) {
             throw new RateLimitExceededException("Rate limit exceeded");
