@@ -23,7 +23,7 @@ public class UserLogin {
     ResponseEntity <ApiResponse<UserLoginDataMapper>> login(@RequestBody @Valid LoginDto data){
         var response = this.userService.loginUser(data);
 
-        return new ResponseEntity<>(new ApiResponse<>("User Logged In Successfully.", new UserLoginDataMapper(response.getAccessToken()) ), HttpStatus.OK);
+        return new ResponseEntity<>( new ApiResponse<>("User Logged In Successfully.", new UserLoginDataMapper(response.getAccessToken()) ), HttpStatus.OK);
     }
 }
 

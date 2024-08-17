@@ -13,6 +13,9 @@ import "updateUser.proto";
 service AuthService {
   rpc SayHelloUser(sayHelloUserRequest) returns (sayHelloUserResponse){}
   rpc LoginUser(LoginRequest) returns (LoginResponse){}
+}
+
+service RequestAuthenticator {
   rpc AuthenticateUser(Empty) returns (User){}
 }
 

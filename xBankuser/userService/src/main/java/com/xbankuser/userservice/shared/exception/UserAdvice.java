@@ -12,6 +12,7 @@ import io.jsonwebtoken.security.SignatureException;
 import jakarta.validation.ConstraintViolationException;
 import net.devh.boot.grpc.server.advice.GrpcAdvice;
 import net.devh.boot.grpc.server.advice.GrpcExceptionHandler;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.transaction.TransactionSystemException;
 
@@ -114,6 +115,26 @@ public class UserAdvice {
                                         .setReason("INTERNAL_SERVER_ERROR")
                                         .setDomain("com.x-bank.userService")
                                 .build()
+                        )
+                )
+                .build();
+
+        return StatusProto.toStatusRuntimeException(status);
+    }
+
+    @GrpcExceptionHandler(BadCredentialsException.class)
+    public static StatusRuntimeException handleBadCredentialsException(BadCredentialsException ex) {
+        String defaultErrorMessage =  ex.getMessage() != null? ex.getMessage():"INVALID CREDENTIAL";
+        Status status = Status
+                .newBuilder().setMessage(defaultErrorMessage)
+                .setCode(Code.INTERNAL_VALUE)
+                .addDetails(
+                        Any.pack(
+                                ErrorInfo.newBuilder()
+                                        .setReason(defaultErrorMessage )
+                                        .setDomain("com.x-bank.userService")
+                                        .putMetadata("message", defaultErrorMessage)
+                                        .build()
                         )
                 )
                 .build();

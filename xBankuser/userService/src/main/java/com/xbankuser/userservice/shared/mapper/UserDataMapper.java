@@ -1,5 +1,6 @@
 package com.xbankuser.userservice.shared.mapper;
 
+import com.google.protobuf.Timestamp;
 import proto.getUser.proto.User;
 
 public class UserDataMapper {
@@ -14,8 +15,8 @@ public class UserDataMapper {
                 .setRole(userInfo.getRole().name())
                 .setFirstName(userInfo.getFirstName())
                 .setLastName(userInfo.getLastName())
-                .setCreatedAt(String.valueOf(userInfo.getCreatedAt()))
-                .setUpdatedAt(String.valueOf(userInfo.getUpdatedAt()))
+                .setCreatedAt(userInfo.getCreatedAt() != null ? Timestamp.newBuilder().setSeconds(userInfo.getCreatedAt().toInstant().getEpochSecond()).build() : Timestamp.getDefaultInstance())
+                .setUpdatedAt(userInfo.getUpdatedAt() != null ? Timestamp.newBuilder().setSeconds(userInfo.getUpdatedAt().toInstant().getEpochSecond()).build() : Timestamp.getDefaultInstance())
                 .build();
     }
 }

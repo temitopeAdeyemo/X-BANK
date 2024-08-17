@@ -28,6 +28,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import proto.service.proto.AuthServiceGrpc;
 import proto.service.proto.GetUserServiceGrpc;
+import proto.service.proto.RequestAuthenticatorGrpc;
 import proto.service.proto.UpdateUserServiceGrpc;
 
 import java.util.ArrayList;
@@ -40,12 +41,6 @@ import java.util.stream.Collectors;
 public class SecurityConfig {
     private final JwtAuthProvider jwtAuthProvider;
     private final JwtService jwtService;
-
-//    @Bean
-//    public PasswordEncoder passwordEncoder()
-//    {
-//        return new BCryptPasswordEncoder();
-//    }
 
     @Bean
     GrpcAuthenticationReader grpcAuthenticationReader (){
@@ -73,10 +68,10 @@ public class SecurityConfig {
         manualGrpcSecurityMetadataSource.setDefault(AccessPredicate.permitAll());
         manualGrpcSecurityMetadataSource.set(AuthServiceGrpc.getSayHelloUserMethod(), AccessPredicate.authenticated());
 
-        manualGrpcSecurityMetadataSource.set(AuthServiceGrpc.getAuthenticateUserMethod(), AccessPredicate.authenticated());
+        manualGrpcSecurityMetadataSource.set(RequestAuthenticatorGrpc.getAuthenticateUserMethod(), AccessPredicate.authenticated());
 
         manualGrpcSecurityMetadataSource.set(GetUserServiceGrpc.getGetAllUsersMethod(), AccessPredicate.authenticated());
-//        manualGrpcSecurityMetadataSource.set(GetUserServiceGrpc.getGetUserByUniqueFieldMethod(), AccessPredicate.authenticated());
+        manualGrpcSecurityMetadataSource.set(GetUserServiceGrpc.getGetUserByUniqueFieldMethod(), AccessPredicate.authenticated());
         manualGrpcSecurityMetadataSource.set(UpdateUserServiceGrpc.getUpdateUserMethod(), AccessPredicate.authenticated());
 
 

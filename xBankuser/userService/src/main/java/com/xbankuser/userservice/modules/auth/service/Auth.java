@@ -31,7 +31,7 @@ public class Auth extends AuthServiceGrpc.AuthServiceImplBase {
         Instant now = Instant.now();
         Instant expiresAt = now.plus(1, ChronoUnit.HOURS);
 
-        Authentication auth = this.jwtAuthProvider.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+        Authentication auth = this.jwtAuthProvider.authenticateLogin(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
 
         String authorities = auth.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
 
@@ -52,16 +52,6 @@ public class Auth extends AuthServiceGrpc.AuthServiceImplBase {
     @Override
     public void sayHelloUser(sayHelloUserRequest request, StreamObserver<sayHelloUserResponse> responseObserver) {
         responseObserver.onNext(sayHelloUserResponse.newBuilder().setMessage("Hello Word!!!").build());
-        responseObserver.onCompleted();
-    }
-
-    @Override
-    public void authenticateUser(Empty request, StreamObserver<User> responseObserver) {
-        var user = ContextKeys.user.get();
-
-        User userBuild = UserDataMapper.mapUserToProtobuf(user);
-
-        responseObserver.onNext(userBuild);
         responseObserver.onCompleted();
     }
 }

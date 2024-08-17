@@ -5,6 +5,7 @@ import com.xbankuser.userservice.shared.service.Jwt.JwtService;
 import com.xbankuser.userservice.shared.utils.ContextKeys;
 import io.grpc.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -22,19 +23,20 @@ public class GrpcAuthInterceptor implements ServerInterceptor {
             ServerCall<ReqT, RespT> call,
             Metadata headers,
             ServerCallHandler<ReqT, RespT> next) {
+        System.out.println("-------------------------------");
         String token = headers.get(Metadata.Key.of("Authorization", Metadata.ASCII_STRING_MARSHALLER));
 
-        User user = null;
-
+        System.out.println("::::::::::::::::"+ token);
         if(token == null || token.isEmpty()){
-            Context context = Context.current().withValue(ContextKeys.user, user);
+            Context context = Context.current().withValue(ContextKeys.user, null);
+            System.out.println("|||=============================||| " + headers.get(Metadata.Key.of("Authorization", Metadata.ASCII_STRING_MARSHALLER)));
             return Contexts.interceptCall(context, call, headers, next);
         }
 
-        user = this.jwtService.extractUser(token);
+        User user = this.jwtService.extractUser(token);
 
         Context context = Context.current().withValue(ContextKeys.user, user);
-
+        System.out.println("=============================");
         return Contexts.interceptCall(context, call, headers, next);
     }
 }

@@ -3,7 +3,6 @@ package com.xbankuser.userservice.config;
 import com.xbankuser.userservice.modules.auth.entiy.User;
 import com.xbankuser.userservice.modules.auth.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,26 +17,28 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 @RequiredArgsConstructor
 public class JwtAuthProvider implements AuthenticationProvider {
     private final UserRepository repository;
-//    private final PasswordEncoder passwordEncoder;
-private final PasswordEncoder passwordEncoder;
-
+    private final PasswordEncoder passwordEncoder;
     @Override
-    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+    public Authentication authenticate(Authentication authentication) /*throws AuthenticationException*/ {
         var userDetails = new DomainUserDetails().loadUserByUsername(authentication.getName());
-        System.out.println(authentication.getCredentials() + "..." + userDetails.getPassword());
-        if(!this.passwordEncoder.matches(authentication.getCredentials().toString(), userDetails.getPassword())) throw new BadCredentialsException("Bad Credentials");
-        if(!authentication.isAuthenticated()){
-//            var userDetails = new DomainUserDetails().loadUserByUsername(authentication.getName());
-//            System.out.println(authentication.getCredentials() + "..." + userDetails.getPassword());
-//            if(new BCryptPasswordEncoder().matches(userDetails.getPassword(), authentication.getCredentials().toString())) throw new BadCredentialsException("Bad Credentials");
-            return new UsernamePasswordAuthenticationToken(userDetails.getUsername(), userDetails.getPassword(), userDetails.getAuthorities());
-        }
+
+        if(!authentication.isAuthenticated()) return new UsernamePasswordAuthenticationToken(userDetails.getUsername(), userDetails.getPassword(), userDetails.getAuthorities());
+
+        return authentication;
+    }
+
+    public Authentication authenticateLogin(Authentication authentication) /*throws AuthenticationException*/ {
+        var userDetails = new DomainUserDetails().loadUserByUsername(authentication.getName());
+        if(authentication.getCredentials().toString() != null && !this.passwordEncoder.matches(authentication.getCredentials().toString(), userDetails.getPassword())) throw new BadCredentialsException("Bad Credentials");
+        if(!authentication.isAuthenticated()) return new UsernamePasswordAuthenticationToken(userDetails.getUsername(), userDetails.getPassword(), userDetails.getAuthorities());
+
         return authentication;
     }
 
 
     @Override
     public boolean supports(Class<?> authentication) {
+        System.out.println("################################");
         return authentication.equals(UsernamePasswordAuthenticationToken.class); // To show we will always pass UsernamePasswordAuthenticationToken class to authenticate method
     }
 
@@ -58,7 +59,7 @@ private final PasswordEncoder passwordEncoder;
         @Override
 //        public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         public User loadUserByUsername(String username) throws UsernameNotFoundException {
-            System.out.println(":::::::::::::::::::::::");
+            System.out.println("::::::::::::::::::::::: in loadUserByUsername ..." + username);
             return  repository.findByEmail(username).orElseThrow(()-> new UsernameNotFoundException("User not found"));
         }
     }

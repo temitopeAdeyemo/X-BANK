@@ -1,5 +1,7 @@
 package com.xbank.servicegateway.shared.Exceptions;
 
+import com.xbank.servicegateway.shared.utils.ApiException;
+import jakarta.validation.constraints.Null;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -9,34 +11,44 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 @ControllerAdvice
 public class GatewayAdvice {
     @ExceptionHandler(value = {ApiRequestException.class})
-    public ResponseEntity<Object> handleApiException(ApiRequestException e){
+    public ResponseEntity<ApiException<Map<String, String>>> handleApiException(ApiRequestException e){
+        System.out.println("ApiRequestException: " + e);
         HttpStatus badRequest = HttpStatus.BAD_REQUEST;
-
-        ApiException<Object> apiException = new ApiException<>(e.getMessage(), null);
+        ApiException<Map<String, String>> apiException = new ApiException<>(e.getMessage(), null);
 
         return new ResponseEntity<>(apiException, badRequest);
     }
 
-    @ExceptionHandler(value = {UpstreamlServiceException.class})
-    public ResponseEntity<Object> handleUpstreamlServiceException(UpstreamlServiceException e){
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiException<Map<String, String>>> handleAllExceptions(Exception ex) {
+        System.out.println("Exception: " + ex);
         HttpStatus badRequest = HttpStatus.BAD_REQUEST;
-
-        ApiException<Object> apiException = new ApiException<>(e.getMessage(), null);
+        ApiException<Map<String, String>> apiException = new ApiException<>(ex.getMessage(), null);
 
         return new ResponseEntity<>(apiException, badRequest);
     }
 
+    @ExceptionHandler(value = {UpstreamServiceException.class})
+    public ResponseEntity<ApiException<Null>> handleUpstreamServiceException(UpstreamServiceException e){
+        System.out.println("UpstreamServiceException: " + e);
+        HttpStatus badRequest = HttpStatus.BAD_REQUEST;
+        ApiException<Null> apiException = new ApiException<>(e.getMessage(), null);
+
+        return new ResponseEntity<>(apiException, badRequest);
+    }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
 
     @ExceptionHandler(value = {MethodArgumentNotValidException.class})
     public ResponseEntity<ApiException<Map<String, String>>> handleInvalidArgument(MethodArgumentNotValidException ex){
+        System.out.println("MethodArgumentNotValidException: " + ex);
         Map<String, String> errorMap = new HashMap<>();
 
         ex.getBindingResult().getFieldErrors().forEach(e -> {
@@ -74,5 +86,4 @@ public class GatewayAdvice {
     public ResponseEntity<ApiException<Object>> handleRateLimitExceededException(RateLimitExceededException ex){
         return new ResponseEntity<>( new ApiException<>(ex.getMessage(), null), HttpStatus.TOO_MANY_REQUESTS);
     }
-
 }

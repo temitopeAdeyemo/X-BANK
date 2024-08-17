@@ -22,7 +22,7 @@ public class ApiResponse<T> {
     @JsonProperty("data")
     public T data;
 
-    public ApiResponse(String message, T data){
+    public ApiResponse( String message, T data){
         this.message = message;
         this.success = true;
         this.data = data;
