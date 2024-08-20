@@ -5,10 +5,7 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import proto.service.proto.GetUserServiceGrpc;
-import proto.service.proto.AuthServiceGrpc;
-import proto.service.proto.RegisterServiceGrpc;
-import proto.service.proto.RequestAuthenticatorGrpc;
+import proto.service.proto.*;
 
 @Configuration
 public class UserServiceClient {
@@ -35,5 +32,15 @@ public class UserServiceClient {
     @Bean
     AuthServiceGrpc.AuthServiceBlockingStub loginUser(ManagedChannel managedChannel){
         return AuthServiceGrpc.newBlockingStub(managedChannel);
+    }
+
+    @Bean
+    VerifyEmailServiceGrpc.VerifyEmailServiceBlockingStub verifyEmailServiceBlockingStub(ManagedChannel managedChannel){
+        return VerifyEmailServiceGrpc.newBlockingStub(managedChannel);
+    }
+
+    @Bean
+    UpdateUserServiceGrpc.UpdateUserServiceBlockingStub updateUserServiceBlockingStub(ManagedChannel managedChannel){
+        return UpdateUserServiceGrpc.newBlockingStub(managedChannel);
     }
 }

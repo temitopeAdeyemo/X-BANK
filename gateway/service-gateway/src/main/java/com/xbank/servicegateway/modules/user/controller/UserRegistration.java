@@ -24,8 +24,8 @@ public class UserRegistration {
     @PostMapping("/register")
     ResponseEntity <ApiResponse<UserRegistrationDataMapper>> createUser(@RequestBody() @Valid UserRegistrationDto data){
 
-        var resp = this.userService.registerUser(data);
+        var response = this.userService.registerUser(data);
 
-        return new ResponseEntity<>(new ApiResponse<>("User created Successfully.", new UserRegistrationDataMapper(resp.getStatus().toString(), resp.getId())), HttpStatus.CREATED);
+        return new ResponseEntity<>(new ApiResponse<>("User created Successfully.", response), HttpStatus.CREATED);
     }
 }

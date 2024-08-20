@@ -1,5 +1,6 @@
 package com.xbank.servicegateway.modules.user.controller;
 
+import com.xbank.servicegateway.modules.user.dto.GetUsersDto;
 import com.xbank.servicegateway.modules.user.dto.UserDto;
 import com.xbank.servicegateway.modules.user.service.Impl.UserServiceImpl;
 import com.xbank.servicegateway.shared.service.UserClient;
@@ -8,10 +9,9 @@ import com.xbank.servicegateway.shared.utils.ContextKeys;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -28,6 +28,12 @@ public class GetUser {
         System.out.println(userr);
 
         var user = this.userDetailsService.getUser(id);
-        return new ResponseEntity<>(new ApiResponse<>( "ok", user), HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse<>( "User fetched successfully", user), HttpStatus.OK);
+    }
+
+    @GetMapping("/get/many")
+    ResponseEntity<ApiResponse<List<UserDto>>> getUser(@ModelAttribute GetUsersDto filter, @RequestParam("page") int page, @RequestParam("page") int size ){
+        var user = this.userDetailsService.getAllUsers(filter, page, size);
+        return new ResponseEntity<>(new ApiResponse<>( "Users fetched successfully", user), HttpStatus.OK);
     }
 }

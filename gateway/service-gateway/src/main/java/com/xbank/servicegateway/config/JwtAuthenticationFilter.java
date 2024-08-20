@@ -35,9 +35,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      * <p>Provides HttpServletRequest and HttpServletResponse arguments instead of the
      * default ServletRequest and ServletResponse ones.
      *
-     * @param request
-     * @param response
-     * @param filterChain
      */
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
@@ -81,5 +78,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write(this.objectMapper.writeValueAsString(new ApiException<>(e.getMessage(), null)));
         }
-    } // This is a filter per pone request
+    }
 }
