@@ -29,29 +29,25 @@ public class VerifyEmail extends VerifyEmailServiceGrpc.VerifyEmailServiceImplBa
 
     @Override
     public void requestOtp(RequestOtpRequest request, StreamObserver<RequestOtpResponse> responseObserver) {
-        Optional<User> userEmailExists = this.userRepository.findByEmail(request.getEmail());
+        var userEmailExists = this.userRepository.findByEmail(request.getEmail()).orElseThrow(()->new UserNotFoundException("User not found."));
 
-        if(userEmailExists.isEmpty()) throw new UserNotFoundException("Email not found");
-
-        if(userEmailExists.get().getEmailVerified()) throw new UserVerifiedException("User already verified.");
+        if(userEmailExists.getEmailVerified()) throw new UserVerifiedException("User already verified.");
 
         String otp = String.valueOf(Math.ceil(Math.random()*100000));
 
         this.redisService.set(cacheIdPath+request.getEmail(), otp, 900, TimeUnit.SECONDS);
 
-        sibClient.sendEmail(request.getEmail(), "EMAIL VERIFICATION", "Verify your email with the otp: "+ otp, null);
+        sibClient.sendEmail(request.getEmail(), "EMAIL VERIFICATION", "Verify your email with the otp: "+ otp);
 
-        responseObserver.onNext(RequestOtpResponse.newBuilder().setStatus(Status.SUCCESSFUL).build());
+        responseObserver.onNext(RequestOtpResponse.newBuilder().setStatus(Status.SUCCESSFUL).setOtp(otp).build());
         responseObserver.onCompleted();
     }
 
     @Override
     public void verifyOtp(VerifyOtpRequest request, StreamObserver<VerifyOtpResponse> responseObserver) {
-        Optional<User> userEmailExists = this.userRepository.findByEmail(request.getEmail());
+        var userEmailExists = this.userRepository.findByEmail(request.getEmail()).orElseThrow(()->new UserNotFoundException("User not found."));
 
-        if(userEmailExists.isEmpty()) throw new UserNotFoundException("Email not found");
-
-        if(userEmailExists.get().getEmailVerified()) throw new UserVerifiedException("User already verified.");
+        if(userEmailExists.getEmailVerified()) throw new UserVerifiedException("User already verified.");
 
         String otp = this.redisService.get(cacheIdPath+request.getEmail());
 

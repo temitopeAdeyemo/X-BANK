@@ -21,7 +21,7 @@ public class SibClient {
     @Value("${sib.senderName}")
     private static String emailSenderName;
 
-    public void sendEmail(String recipientEmail, String subject, String message, String name) {
+    public void sendEmail(String recipientEmail, String subject, String message) {
         ApiClient defaultClient = Configuration.getDefaultApiClient();
 
         ApiKeyAuth apiKey = (ApiKeyAuth) defaultClient.getAuthentication("api-key");
@@ -30,7 +30,7 @@ public class SibClient {
 
         TransactionalEmailsApi apiInstance = new TransactionalEmailsApi();
 
-        SendSmtpEmail email = getSendSmtpEmail( recipientEmail, subject, message, name);
+        SendSmtpEmail email = getSendSmtpEmail( recipientEmail, subject, message);
 
         try {
             CreateSmtpEmail response = apiInstance.sendTransacEmail(email);
@@ -42,14 +42,14 @@ public class SibClient {
     }
 
     @NotNull
-    private static SendSmtpEmail getSendSmtpEmail(String recipientEmail, String subject, String message, String name) {
+    private static SendSmtpEmail getSendSmtpEmail(String recipientEmail, String subject, String message) {
         SendSmtpEmailSender sender = new SendSmtpEmailSender();
         sender.setEmail(emailSender);
         sender.setName(emailSenderName);
 
         SendSmtpEmailTo recipient = new SendSmtpEmailTo();
         recipient.setEmail(recipientEmail);
-        recipient.setName(name.isEmpty()? "X-BANK-USER": name);
+        recipient.setName("X-BANK-USER");
 
         SendSmtpEmail email = new SendSmtpEmail();
         email.setSender(sender);

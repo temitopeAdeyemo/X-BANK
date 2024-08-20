@@ -18,6 +18,7 @@ message VerifyOtpRequest{
 
 message RequestOtpResponse {
   Status status = 1;
+  string otp = 2;
 }
 
 message VerifyOtpResponse{
