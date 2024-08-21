@@ -3,7 +3,6 @@ package com.xbank.servicegateway.modules.user.controller;
 import com.xbank.servicegateway.modules.user.dto.OtpDto;
 import com.xbank.servicegateway.modules.user.service.UserService;
 import com.xbank.servicegateway.shared.utils.ApiResponse;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

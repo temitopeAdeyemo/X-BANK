@@ -4,5 +4,6 @@ import lombok.Data;
 @Data
 public class StatusResponse {
     public String Status;
+
     public String otp;
 }

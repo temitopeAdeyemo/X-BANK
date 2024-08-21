@@ -2,8 +2,6 @@ package com.xbank.servicegateway.modules.user.service.Impl;
 
 import com.xbank.servicegateway.modules.user.dto.*;
 import com.xbank.servicegateway.modules.user.service.UserService;
-//import com.xbank.servicegateway.shared.service.UserClient;
-//import jakarta.validation.Valid;
 import com.xbank.servicegateway.shared.service.UserClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
