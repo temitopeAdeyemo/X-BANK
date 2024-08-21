@@ -17,6 +17,7 @@ import proto.verifyEmail.proto.RequestOtpResponse;
 import proto.verifyEmail.proto.VerifyOtpRequest;
 import proto.verifyEmail.proto.VerifyOtpResponse;
 import java.util.Optional;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 @GrpcService
@@ -33,7 +34,7 @@ public class VerifyEmail extends VerifyEmailServiceGrpc.VerifyEmailServiceImplBa
 
         if(userEmailExists.getEmailVerified()) throw new UserVerifiedException("User already verified.");
 
-        String otp = String.valueOf(Math.ceil(Math.random()*100000));
+        String otp = String.valueOf(new Random().nextInt()*999999); //String.valueOf(Math.round(Math.random()*999999));
 
         this.redisService.set(cacheIdPath+request.getEmail(), otp, 900, TimeUnit.SECONDS);
 
@@ -49,9 +50,12 @@ public class VerifyEmail extends VerifyEmailServiceGrpc.VerifyEmailServiceImplBa
 
         if(userEmailExists.getEmailVerified()) throw new UserVerifiedException("User already verified.");
 
-        String otp = this.redisService.get(cacheIdPath+request.getEmail());
-
+        var otp = this.redisService.get(cacheIdPath+request.getEmail());
+        System.out.println(otp+ "..."+ request.getOtp()+ "..."+ request.getEmail());
         if(!otp.equals(request.getOtp())) throw new InvalidOtpException("Invalid OTP");
+
+        userEmailExists.setEmailVerified(true);
+        this.userRepository.save(userEmailExists);
 
         responseObserver.onNext(VerifyOtpResponse.newBuilder().setStatus(Status.SUCCESSFUL).build());
         responseObserver.onCompleted();

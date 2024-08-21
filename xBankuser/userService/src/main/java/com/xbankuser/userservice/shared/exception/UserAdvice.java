@@ -163,6 +163,27 @@ public class UserAdvice {
         return StatusProto.toStatusRuntimeException(status);
     }
 
+    @GrpcExceptionHandler(InvalidOtpException.class)
+    public static StatusRuntimeException handleInvalidOtpExceptionExceptions(InvalidOtpException ex) {
+        System.out.println(ex);
+        String defaultErrorMessage =  ex.getMessage() != null? ex.getMessage():"SERVER ERROR:";
+        Status status = Status
+                .newBuilder().setMessage("Invalid Otp.").
+                setCode(Code.INTERNAL_VALUE)
+                .addDetails(
+                        Any.pack(
+                                ErrorInfo.newBuilder()
+                                        .setReason(defaultErrorMessage )
+                                        .setDomain("com.x-bank.userService")
+                                        .putMetadata("message", defaultErrorMessage)
+                                        .build()
+                        )
+                )
+                .build();
+
+        return StatusProto.toStatusRuntimeException(status);
+    }
+
     @GrpcExceptionHandler(TransactionSystemException.class)
     public StatusRuntimeException handleConstraintViolationException(TransactionSystemException ex) {
         Throwable cause = ex.getRootCause();

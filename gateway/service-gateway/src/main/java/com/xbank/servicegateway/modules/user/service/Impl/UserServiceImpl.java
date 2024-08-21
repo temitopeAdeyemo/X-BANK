@@ -85,6 +85,7 @@ public class UserServiceImpl implements UserService {
         var response = this.userClient.requestVerificationOtp(RequestOtpRequest.newBuilder().setEmail(email).build());
         var statusResponse = new StatusResponse();
         statusResponse.setStatus(response.getStatus().toString());
+        statusResponse.setOtp(response.getOtp());
 
         return statusResponse;
     }

@@ -36,4 +36,10 @@ public class GetUser {
         var user = this.userDetailsService.getAllUsers(filter, page, size);
         return new ResponseEntity<>(new ApiResponse<>( "Users fetched successfully", user), HttpStatus.OK);
     }
+
+    @GetMapping("/")
+    ResponseEntity<ApiResponse<List<UserDto>>> getUseree(){
+        System.out.println(":::::::::::::::::::::::::::::::::::");
+        return new ResponseEntity<>(new ApiResponse<>( "Users fetched successfully", null), HttpStatus.OK);
+    }
 }

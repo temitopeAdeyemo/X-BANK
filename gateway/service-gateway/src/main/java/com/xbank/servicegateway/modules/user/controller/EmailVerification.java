@@ -1,7 +1,9 @@
 package com.xbank.servicegateway.modules.user.controller;
 
+import com.xbank.servicegateway.modules.user.dto.OtpDto;
 import com.xbank.servicegateway.modules.user.service.UserService;
 import com.xbank.servicegateway.shared.utils.ApiResponse;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +22,9 @@ public class EmailVerification {
     }
 
     @PatchMapping("verification/{email}")
-    ResponseEntity<Object> validate(@PathVariable String email, @RequestBody String otp){
+    ResponseEntity<Object> validate(@PathVariable String email, @RequestBody OtpDto otp){
 
-        var response = this.userService.validateVerificationOtp(email, otp);
+        var response = this.userService.validateVerificationOtp(email, otp.getOtp());
 
         return new ResponseEntity<>(new ApiResponse<>( "Users verified successfully", response), HttpStatus.OK);
     }

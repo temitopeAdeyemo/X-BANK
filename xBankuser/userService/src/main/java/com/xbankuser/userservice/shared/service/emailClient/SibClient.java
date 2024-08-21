@@ -1,61 +1,44 @@
 package com.xbankuser.userservice.shared.service.emailClient;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import sendinblue.ApiClient;
-import sendinblue.ApiException;
-import sendinblue.Configuration;
-import sendinblue.auth.ApiKeyAuth;
-import sibApi.TransactionalEmailsApi;
-import sibModel.*;
+import org.springframework.web.client.RestTemplate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class SibClient {
     @Value("${sib.apikey}")
-    private static String sibApiKey;
+    private String sibApiKey;
 
     @Value("${sib.sender}")
-    private static String emailSender;
+    private String emailSender;
 
     @Value("${sib.senderName}")
-    private static String emailSenderName;
+    private String emailSenderName;
 
     public void sendEmail(String recipientEmail, String subject, String message) {
-        ApiClient defaultClient = Configuration.getDefaultApiClient();
+        String url = "https://api.brevo.com/v3/smtp/email";
 
-        ApiKeyAuth apiKey = (ApiKeyAuth) defaultClient.getAuthentication("api-key");
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders httpHeaders = new HttpHeaders();
 
-        apiKey.setApiKey(sibApiKey);
-
-        TransactionalEmailsApi apiInstance = new TransactionalEmailsApi();
-
-        SendSmtpEmail email = getSendSmtpEmail( recipientEmail, subject, message);
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        httpHeaders.set("api-key", sibApiKey);
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("sender", Map.of("name", emailSenderName, "email", emailSender));
+        requestBody.put("to", List.of(Map.of("email", recipientEmail, "name", "X-BANK")));
+        requestBody.put("htmlContent", "<!DOCTYPE html> <html> <body> <h1>"+ message+ "</h1> </body> </html>");
+        requestBody.put("subject", subject);
+        HttpEntity<Map<String, Object>> httpEntity = new HttpEntity<>(requestBody, httpHeaders);
 
         try {
-            CreateSmtpEmail response = apiInstance.sendTransacEmail(email);
+            ResponseEntity<String> response= restTemplate.exchange(url, HttpMethod.POST, httpEntity, String.class );
+
             System.out.println(response);
-        } catch (ApiException e) {
-            System.err.println("Exception when calling TransactionalEmailsApi#sendTransacEmail");
-            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println(e);
         }
-    }
-
-    @NotNull
-    private static SendSmtpEmail getSendSmtpEmail(String recipientEmail, String subject, String message) {
-        SendSmtpEmailSender sender = new SendSmtpEmailSender();
-        sender.setEmail(emailSender);
-        sender.setName(emailSenderName);
-
-        SendSmtpEmailTo recipient = new SendSmtpEmailTo();
-        recipient.setEmail(recipientEmail);
-        recipient.setName("X-BANK-USER");
-
-        SendSmtpEmail email = new SendSmtpEmail();
-        email.setSender(sender);
-        email.setTo(List.of(recipient));
-        email.setSubject(subject);
-        email.setHtmlContent("<html><body><h1>"+message+"</h1></body></html>");
-        return email;
     }
 }

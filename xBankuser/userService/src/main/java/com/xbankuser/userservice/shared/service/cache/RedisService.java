@@ -1,6 +1,7 @@
 package com.xbankuser.userservice.shared.service.cache;
 import com.xbankuser.userservice.shared.exception.ServerErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Repository;
@@ -9,12 +10,12 @@ import java.util.concurrent.TimeUnit;
 @Repository
 public class RedisService {
 
-    private final StringRedisTemplate redisTemplate;
-    private final ValueOperations<String, String> valueOps;
+    private final RedisTemplate<String, Object> redisTemplate;
+    private final ValueOperations<String, Object> valueOps;
 
 
     @Autowired
-    public RedisService(StringRedisTemplate redisTemplate) {
+    public RedisService(RedisTemplate<String, Object> redisTemplate) {
         this.redisTemplate = redisTemplate;
         this.valueOps = redisTemplate.opsForValue();
     }
@@ -25,7 +26,7 @@ public class RedisService {
      * @param key   cache key
      * @param value cache value
      */
-    public void set(String key, String data, long timeout, TimeUnit unit) {
+    public void set(String key, Object data, long timeout, TimeUnit unit) {
         try {
             valueOps.set(key, data,timeout, unit );
         } catch (RuntimeException e) {
@@ -39,7 +40,7 @@ public class RedisService {
      * @param key cached key
      * @return cached value
      */
-    public String get(String key) {
+    public Object get(String key) {
         try {
             return valueOps.get(key);
         } catch (RuntimeException e) {
