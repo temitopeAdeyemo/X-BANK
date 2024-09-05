@@ -12,6 +12,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.annotation.Order;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -25,6 +26,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
+@Order(2)
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final UserClient userDetailsService;
     private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());

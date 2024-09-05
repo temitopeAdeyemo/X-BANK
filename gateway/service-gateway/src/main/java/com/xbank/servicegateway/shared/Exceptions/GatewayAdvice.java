@@ -1,6 +1,7 @@
 package com.xbank.servicegateway.shared.Exceptions;
 
 import com.xbank.servicegateway.shared.utils.ApiException;
+import io.github.resilience4j.ratelimiter.RequestNotPermitted;
 import jakarta.validation.constraints.Null;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,6 +26,14 @@ public class GatewayAdvice {
         return new ResponseEntity<>(apiException, badRequest);
     }
 
+    @ExceptionHandler(RequestNotPermitted.class)
+    public ResponseEntity<ApiException<Map<String, String>>> handleRateLimitException(RequestNotPermitted ex) {
+        System.out.println("Exception: " + ex);
+        HttpStatus badRequest = HttpStatus.TOO_MANY_REQUESTS;
+        ApiException<Map<String, String>> apiException = new ApiException<>(ex.getMessage(), null);
+
+        return new ResponseEntity<>(apiException, badRequest);
+    }
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiException<Map<String, String>>> handleAllExceptions(Exception ex) {
         System.out.println("Exception: " + ex);

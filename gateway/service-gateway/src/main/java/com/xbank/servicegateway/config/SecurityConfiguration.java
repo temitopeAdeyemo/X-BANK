@@ -21,6 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfiguration {
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+    private final ThrottlingFilter throttlingFilter;
 
     @Bean
     SecurityFilterChain web(HttpSecurity http) throws Exception {
@@ -33,6 +34,7 @@ public class SecurityConfiguration {
                 )
 //                .authenticationProvider(authenticationProvider) // Commented out since we are not doing authentication here on this service
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(throttlingFilter, JwtAuthenticationFilter.class)
                 .headers(headers -> headers.xssProtection(HeadersConfigurer.XXssConfig::disable)
                         .contentSecurityPolicy(csp -> csp.policyDirectives("script-src 'self'"))
                 )
