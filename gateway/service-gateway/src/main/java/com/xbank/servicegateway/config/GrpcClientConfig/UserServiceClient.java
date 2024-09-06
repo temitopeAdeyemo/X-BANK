@@ -5,11 +5,13 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import proto.service.proto.*;
 
 @Configuration
 public class UserServiceClient {
     @Bean
+    @Primary
     ManagedChannel userChannel (){
         return ManagedChannelBuilder.forAddress("localhost", 2022 ).usePlaintext().build();
     }
