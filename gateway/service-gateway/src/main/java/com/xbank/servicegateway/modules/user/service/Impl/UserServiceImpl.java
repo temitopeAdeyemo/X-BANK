@@ -2,6 +2,7 @@ package com.xbank.servicegateway.modules.user.service.Impl;
 
 import com.xbank.servicegateway.modules.user.dto.*;
 import com.xbank.servicegateway.modules.user.service.UserService;
+import com.xbank.servicegateway.shared.mapper.UserMapper;
 import com.xbank.servicegateway.shared.service.UserClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -56,7 +57,7 @@ public class UserServiceImpl implements UserService {
         var user = this.userClient.getUserByUniqueField(user_id);
         var userBuild = new UserDto();
 
-        userBuilder(userBuild, user);
+        new UserMapper().userBuilder(userBuild, user);
 
         return userBuild;
     }
@@ -114,25 +115,9 @@ public class UserServiceImpl implements UserService {
         var userBuild = new UserDto();
 
         response.getUsersList().forEach((user)->{
-            userList.add(userBuilder(userBuild, user));
+            userList.add(new UserMapper().userBuilder(userBuild, user));
         });
 
         return userList;
     }
-
-    private UserDto userBuilder(UserDto userBuild, User user) {
-        userBuild.setId(user.getId());
-        userBuild.setEmail(user.getEmail());
-        userBuild.setRole(user.getRole());
-        userBuild.setFirst_name(user.getFirstName());
-        userBuild.setEmail_verified(user.getEmailVerified());
-        userBuild.setLast_name(user.getLastName());
-        userBuild.setPhone_number(user.getPhoneNumber());
-        userBuild.setUpdated_at(String.valueOf(new Date(user.getUpdatedAt().getSeconds() * 1000L + user.getUpdatedAt().getNanos() / 1000000L)));
-        userBuild.setCreated_at(String.valueOf(new Date(user.getCreatedAt().getSeconds() * 1000L + user.getCreatedAt().getNanos() / 1000000L)));
-
-        return userBuild;
-    }
-
-
 }
