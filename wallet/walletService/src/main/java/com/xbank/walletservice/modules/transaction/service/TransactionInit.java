@@ -29,9 +29,9 @@ public class TransactionInit extends TransactionInitServiceGrpc.TransactionInitS
     @Transactional(dontRollbackOn = {InsufficientBalanceException.class, TransactionDeclinedException.class})
     public void fundTransfer(FundTransferRequest request, StreamObserver<FundDepositResponse> responseObserver) {
         // track session with user id for fund transfer. If user id session is still available during fund transfer, decline transaction
-        Wallet senderWallet = this.walletRepository.findByUserId(UUID.fromString(request.getUserId())).orElseThrow(()-> new EntityNotFoundException("Sender Wallet Not Found."));
+        Wallet senderWallet = this.walletRepository.findByUserId(UUID.fromString(request.getSenderId())).orElseThrow(()-> new EntityNotFoundException("Sender Wallet Not Found."));
 
-        Wallet receiverWallet = this.walletRepository.getByAccountNumberOrId(request.getAccountNumber()).orElseThrow(()-> new EntityNotFoundException("Receiver Wallet Not Found."));
+        Wallet receiverWallet = this.walletRepository.getByAccountNumberOrId(request.getReceiverAccountNumber()).orElseThrow(()-> new EntityNotFoundException("Receiver Wallet Not Found."));
 
         if(senderWallet.getBalance().compareTo(BigDecimal.ZERO) <= 0 || senderWallet.getBalance().compareTo(BigDecimal.valueOf(request.getAmount()))< 0) {
             var newTransactionData = TransactionDataMapper.mapProtoToTransactionData(
@@ -65,7 +65,7 @@ public class TransactionInit extends TransactionInitServiceGrpc.TransactionInitS
             throw new TransactionDeclinedException("Amount not allowed.");
         }
 
-        if(senderWallet.getAccountNumber().equals(request.getAccountNumber())){
+        if(senderWallet.getAccountNumber().equals(request.getReceiverAccountNumber())){
             Transaction newTransactionData = TransactionDataMapper.mapProtoToTransactionData(
                     TransactionType.FUND_TRANSFER,
                     request.getSourceCode(),

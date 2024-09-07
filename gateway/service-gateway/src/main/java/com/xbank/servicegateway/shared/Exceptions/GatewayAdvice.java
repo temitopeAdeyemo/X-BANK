@@ -52,6 +52,15 @@ public class GatewayAdvice {
         return new ResponseEntity<>(apiException, badRequest);
     }
 
+    @ExceptionHandler(value = {SystemBusyException.class})
+    public ResponseEntity<ApiException<Null>> handleSystemBusyException(SystemBusyException e){
+        System.out.println("SystemBusyException: " + e);
+        HttpStatus status = HttpStatus.LOCKED;
+        ApiException<Null> apiException = new ApiException<>(e.getMessage(), null);
+
+        return new ResponseEntity<>(apiException, status);
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
 
     @ExceptionHandler(value = {MethodArgumentNotValidException.class})

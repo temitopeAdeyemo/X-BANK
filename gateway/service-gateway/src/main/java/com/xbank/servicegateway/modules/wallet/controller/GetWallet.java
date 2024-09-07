@@ -5,6 +5,7 @@ import com.xbank.servicegateway.modules.wallet.dto.GetWalletsRequest;
 import com.xbank.servicegateway.modules.wallet.dto.WalletDto;
 import com.xbank.servicegateway.modules.wallet.service.WalletService;
 import com.xbank.servicegateway.shared.utils.ApiResponse;
+import com.xbank.servicegateway.shared.utils.ContextKeys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class GetWallet {
 
     @GetMapping("/")
     ResponseEntity<ApiResponse<WalletDto>> getSingle(@ModelAttribute GetWalletRequest data){
-        WalletDto response = this.walletService.getWallet(data);
+        WalletDto response = this.walletService.getWallet(data, ContextKeys.user.get().getId());
 
         return new ResponseEntity<>(new ApiResponse<>("Success.", response),HttpStatus.OK);
     }

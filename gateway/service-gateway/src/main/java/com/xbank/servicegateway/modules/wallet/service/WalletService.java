@@ -1,10 +1,7 @@
 package com.xbank.servicegateway.modules.wallet.service;
 
 import com.xbank.servicegateway.modules.user.dto.StatusResponse;
-import com.xbank.servicegateway.modules.wallet.dto.CreateWalletResponse;
-import com.xbank.servicegateway.modules.wallet.dto.GetWalletRequest;
-import com.xbank.servicegateway.modules.wallet.dto.WalletDto;
-
+import com.xbank.servicegateway.modules.wallet.dto.*;
 import java.util.List;
 
 public interface WalletService {
@@ -12,15 +9,15 @@ public interface WalletService {
 
     StatusResponse deleteWallet(String userId);
 
-    WalletDto getWallet(GetWalletRequest payload);
+    public WalletDto getWallet(GetWalletRequest payload, String userId );
 
     List<WalletDto> getWallets(com.xbank.servicegateway.modules.wallet.dto.GetWalletsRequest payload, int page, int size);
 
-    void getBalance();
+    BalanceResponse getBalance(GetWalletRequest payload, String userId);
 
-    void fundWallet();
+    InitTransactionResponse fundWallet(FundWalletRequest payload, String userId);
 
-    void fundTransfer();
+    InitTransactionResponse fundTransfer(FundTransferRequest payload, String userId);
 
     void getSingleTransaction();
 

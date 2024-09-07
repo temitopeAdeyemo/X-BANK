@@ -15,12 +15,10 @@ message FundWalletRequest {
 }
 
 message FundTransferRequest {
-  string user_id = 1;
-  string account_number = 2;
+  string sender_id = 1;
+  string receiver_account_number = 2;
   int64 amount = 3;
   string source_code = 4;
-  User senderData = 5;
-  User receiverData = 6;
 }
 
 
