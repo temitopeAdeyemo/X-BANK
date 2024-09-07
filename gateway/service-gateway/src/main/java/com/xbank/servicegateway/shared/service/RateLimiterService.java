@@ -1,7 +1,6 @@
 package com.xbank.servicegateway.shared.service;
 
 import com.xbank.servicegateway.config.JedisConfig;
-import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.BucketConfiguration;
 import io.github.bucket4j.distributed.ExpirationAfterWriteStrategy;
@@ -13,9 +12,9 @@ import org.springframework.stereotype.Component;
 import java.time.Duration;
 
 @Component
-public class RateLimiterr {
+public class RateLimiterService {
     public JedisBasedProxyManager<String> proxyManager;
-    public RateLimiterr() {
+    public RateLimiterService() {
         redis.clients.jedis.JedisPool jedisPool = new JedisConfig().getJedisPool();
         this.proxyManager = Bucket4jJedis.casBasedBuilder(jedisPool)
                 .expirationAfterWrite(ExpirationAfterWriteStrategy.basedOnTimeForRefillingBucketUpToMax(Duration.ofSeconds(10)))

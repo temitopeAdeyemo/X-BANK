@@ -17,7 +17,6 @@ public class NullOrLengthValidator implements ConstraintValidator<NullOrLength, 
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        // Allow null and empty strings
         if (value == null || value.isEmpty()) {
             return true;
         }

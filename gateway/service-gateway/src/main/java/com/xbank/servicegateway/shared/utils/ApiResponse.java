@@ -23,16 +23,6 @@ public class ApiResponse<T> {
     @JsonProperty("data")
     public  T data;
 
-//    @JsonProperty("dataList")
-//    public  List<T> dataList;
-
-//    public ApiResponse( String message, List<T> dataList){
-//        this.message = message;
-//        this.success = true;
-//        this.dataList = dataList;
-//        this.timezone = ZonedDateTime.now(ZoneId.of("Z"));
-//    }
-
     public ApiResponse( String message, T data){
         this.message = message;
         this.success = true;

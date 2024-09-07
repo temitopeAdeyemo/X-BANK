@@ -1,7 +1,6 @@
 package com.xbank.servicegateway.config;
 
 import lombok.Getter;
-import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 

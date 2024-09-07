@@ -1,6 +1,6 @@
 package com.xbank.servicegateway.config;
 
-import com.xbank.servicegateway.shared.service.RateLimiterr;
+import com.xbank.servicegateway.shared.service.RateLimiterService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,10 +16,10 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @Order(1)
 public class ThrottlingFilter extends OncePerRequestFilter {
-    private final RateLimiterr rateLimiterr;
+    private final RateLimiterService rateLimiterr;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String userToken = request.getHeader("Authorization"); // Assuming the token is passed in the Authorization header
+        String userToken = request.getHeader("Authorization");
 
         String key = "global_limiter_key";
         long tokenCount = 100;

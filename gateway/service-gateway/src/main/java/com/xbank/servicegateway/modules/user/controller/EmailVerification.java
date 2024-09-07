@@ -16,15 +16,12 @@ public class EmailVerification {
     @PostMapping("verification/{email}")
     ResponseEntity<Object> init(@PathVariable String email){
         var response = this.userService.requestVerificationEmail(email);
-
         return new ResponseEntity<>(new ApiResponse<>( "Otp sent to your email.", response), HttpStatus.OK);
     }
 
     @PatchMapping("verification/{email}")
     ResponseEntity<Object> validate(@PathVariable String email, @RequestBody OtpDto otp){
-
         var response = this.userService.validateVerificationOtp(email, otp.getOtp());
-
         return new ResponseEntity<>(new ApiResponse<>( "Users verified successfully", response), HttpStatus.OK);
     }
 }

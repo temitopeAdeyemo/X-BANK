@@ -26,7 +26,6 @@ public class UpdateUser {
     @PostMapping("/update")
     public ResponseEntity<Object> init(@RequestBody @Valid UpdateUserDto data){
         var response = this.userService.updateUser(data);
-
         return new ResponseEntity<>(new ApiResponse<>( "Users updated successfully", response), HttpStatus.OK);
     }
 }

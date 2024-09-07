@@ -20,12 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserRegistration {
     private final UserService userService;
 
-//    @RateLimited(endpoint = "/register", interval = 5, point = 10)
     @PostMapping("/register")
     ResponseEntity <ApiResponse<UserRegistrationDataMapper>> createUser(@RequestBody() @Valid UserRegistrationDto data){
-
         var response = this.userService.registerUser(data);
-
         return new ResponseEntity<>(new ApiResponse<>("User created Successfully.", response), HttpStatus.CREATED);
     }
 }

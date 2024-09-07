@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class DeleteWallet {
     private final WalletService walletService;
 
-    @DeleteMapping("/")
+    @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<StatusResponse>> init(@PathVariable String id){
         var response = this.walletService.deleteWallet(id);
 
-        return new ResponseEntity<>(new ApiResponse<>("User created Successfully.", response), HttpStatus.OK);
+        return new ResponseEntity<>(new ApiResponse<>("Wallet deleted Successfully.", response), HttpStatus.OK);
     }
 }

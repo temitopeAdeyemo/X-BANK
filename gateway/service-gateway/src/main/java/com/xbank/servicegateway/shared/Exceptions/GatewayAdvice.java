@@ -88,7 +88,7 @@ public class GatewayAdvice {
 
     @ExceptionHandler(value = {ResourceNotFoundException.class})
     public ResponseEntity<ApiException<Object>> handlePathException(ResourceNotFoundException ex){
-        return new ResponseEntity<>(new ApiException<>("Page Not Found", null), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(new ApiException<>("Resource Not Found", null), HttpStatus.NOT_FOUND);
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
