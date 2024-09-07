@@ -44,7 +44,6 @@ public class TransactionDataMapper {
             Wallet receiverWallet,
             Wallet senderWallet,
             String statusDescription,
-//            User userData,
             com.xbank.walletservice.modules.transaction.entity.TransactionStatus status
             ) {
         var newTransactionData = new Transaction();

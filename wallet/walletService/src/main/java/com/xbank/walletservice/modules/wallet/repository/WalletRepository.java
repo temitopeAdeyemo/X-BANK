@@ -11,8 +11,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface WalletRepository extends JpaRepository<Wallet, UUID> {
-
-//    @EntityGraph(attributePaths = {"debitTransactions", "creditTransactions"})
     @Query("SELECT wallet FROM Wallet wallet WHERE wallet.accountNumber = :uniqueData OR cast(wallet.id as string) = :uniqueData")
     Optional<Wallet> getByAccountNumberOrId(String uniqueData);
 

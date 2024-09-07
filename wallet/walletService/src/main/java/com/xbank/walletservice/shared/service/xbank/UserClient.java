@@ -23,7 +23,6 @@ public class UserClient {
             return this.synchronousUserClient.getUserByUniqueField(GetUserByUniqueFieldRequest.newBuilder().setFilterBy(GetUserUniqueFields.ID).setValue(user_id).build());
         }catch (Exception e){
             throw new UpstreamlServiceException(e.getMessage());
-//            return User.newBuilder().build();
         }
     }
 }

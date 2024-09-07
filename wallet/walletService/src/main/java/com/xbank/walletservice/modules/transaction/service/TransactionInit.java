@@ -28,7 +28,6 @@ public class TransactionInit extends TransactionInitServiceGrpc.TransactionInitS
     @Override
     @Transactional(dontRollbackOn = {InsufficientBalanceException.class, TransactionDeclinedException.class})
     public void fundTransfer(FundTransferRequest request, StreamObserver<FundDepositResponse> responseObserver) {
-        // track session with user id for fund transfer. If user id session is still available during fund transfer, decline transaction
         Wallet senderWallet = this.walletRepository.findByUserId(UUID.fromString(request.getSenderId())).orElseThrow(()-> new EntityNotFoundException("Sender Wallet Not Found."));
 
         Wallet receiverWallet = this.walletRepository.getByAccountNumberOrId(request.getReceiverAccountNumber()).orElseThrow(()-> new EntityNotFoundException("Receiver Wallet Not Found."));
@@ -106,7 +105,6 @@ public class TransactionInit extends TransactionInitServiceGrpc.TransactionInitS
     @Override
     @Transactional(dontRollbackOn = TransactionDeclinedException.class)
     public void fundWallet(FundWalletRequest request, StreamObserver<FundDepositResponse> responseObserver) {
-        // track session with user id for fund Wallet. If user id session is still available during fund Wallet, decline transaction
         var wallet = this.walletRepository.findByUserId(UUID.fromString(request.getUserId())).orElseThrow(()-> new EntityNotFoundException("Wallet Not Found."));
 
         if(request.getAmount() <= 0){

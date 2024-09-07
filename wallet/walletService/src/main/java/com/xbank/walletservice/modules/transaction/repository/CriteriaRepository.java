@@ -48,7 +48,7 @@ public class CriteriaRepository {
 
         var pageable = getPageable(page, size);
 
-        Long transactionCount = getEmployeeCount(predicate);
+        Long transactionCount = getCount(predicate);
 
         return new PageImpl<>(typedQuery.getResultList(), pageable, transactionCount);
     }
@@ -77,7 +77,7 @@ public class CriteriaRepository {
         return  PageRequest.of(page, size, Sort.by("created_at").descending());
     }
 
-    private Long getEmployeeCount(Predicate predicate) {
+    private Long getCount(Predicate predicate) {
         CriteriaQuery<Long> countQuery = criteriaBuilder.createQuery(Long.class);
 
         Root<Transaction> countRoot = countQuery.from(Transaction.class);
