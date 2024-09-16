@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class Publisher {
-    private final static String QUEUE_NAME = "DEFAULT_QUEUE";
+    private final static String DEFAULT_QUEUE = "DEFAULT_QUEUE";
     private final static String EMAIL_QUEUE = "EMAIL_QUEUE";
 
     public void publishEmail(String message) throws Exception {
