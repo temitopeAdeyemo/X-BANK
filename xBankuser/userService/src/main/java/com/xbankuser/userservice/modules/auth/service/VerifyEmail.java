@@ -1,12 +1,11 @@
 package com.xbankuser.userservice.modules.auth.service;
 
-import com.xbankuser.userservice.modules.auth.entiy.User;
 import com.xbankuser.userservice.modules.auth.repository.UserRepository;
 import com.xbankuser.userservice.shared.exception.InvalidOtpException;
 import com.xbankuser.userservice.shared.exception.UserNotFoundException;
 import com.xbankuser.userservice.shared.exception.UserVerifiedException;
 import com.xbankuser.userservice.shared.service.cache.RedisService;
-import com.xbankuser.userservice.shared.service.emailClient.SibClient;
+import com.xbankuser.userservice.shared.service.emailClient.BaseEmailClient;
 import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
 import net.devh.boot.grpc.server.service.GrpcService;
@@ -16,7 +15,7 @@ import proto.verifyEmail.proto.RequestOtpRequest;
 import proto.verifyEmail.proto.RequestOtpResponse;
 import proto.verifyEmail.proto.VerifyOtpRequest;
 import proto.verifyEmail.proto.VerifyOtpResponse;
-import java.util.Optional;
+
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -24,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class VerifyEmail extends VerifyEmailServiceGrpc.VerifyEmailServiceImplBase {
     private final UserRepository userRepository;
-    private final SibClient sibClient;
+    private final BaseEmailClient emailClient;
     private final RedisService redisService;
     public String cacheIdPath = "VERIFICATION/EMAIL/";
 
@@ -38,7 +37,7 @@ public class VerifyEmail extends VerifyEmailServiceGrpc.VerifyEmailServiceImplBa
 
         this.redisService.set(cacheIdPath+request.getEmail(), otp, 900, TimeUnit.SECONDS);
 
-        sibClient.sendEmail(request.getEmail(), "EMAIL VERIFICATION", "Verify your email with the otp: "+ otp);
+        emailClient.sendEmail(request.getEmail(), "EMAIL VERIFICATION", "Verify your email with the otp:\n"+ otp);
 
         responseObserver.onNext(RequestOtpResponse.newBuilder().setStatus(Status.SUCCESSFUL).setOtp(otp).build());
         responseObserver.onCompleted();

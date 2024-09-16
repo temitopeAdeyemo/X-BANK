@@ -36,6 +36,8 @@ public class Register extends RegisterServiceGrpc.RegisterServiceImplBase {
 
         var user = this.userRepository.save(userData);
 
+
+
         responseObserver.onNext(SignupResponse.newBuilder().setStatus(Status.SUCCESSFUL).setId(String.valueOf(user.getId())).build());
         responseObserver.onCompleted();
     }

@@ -1,4 +1,5 @@
 package com.xbankuser.userservice.shared.service.emailClient;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,7 @@ public class SibClient {
     @Value("${sib.senderName}")
     private String emailSenderName;
 
-    public void sendEmail(String recipientEmail, String subject, String message) {
+    protected void initiate(String recipientEmail, String subject, String message) {
         String url = "https://api.brevo.com/v3/smtp/email";
 
         RestTemplate restTemplate = new RestTemplate();
