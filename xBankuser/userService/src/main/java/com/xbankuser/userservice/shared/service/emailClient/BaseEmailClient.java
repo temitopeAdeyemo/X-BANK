@@ -20,9 +20,7 @@ public class BaseEmailClient {
     }
 
     private void queueFailedEmail(String recipientEmail, String subject, String message) {
-        String queueName = "EMAIL_QUEUE";
         try {
-            // Create a message in the format you want (could be JSON or a simple concatenated string)
             String emailMessage = "0" + "|" + recipientEmail + "|" + subject + "|" + message;
             publisher.publishEmail(emailMessage);
         } catch (Exception e) {
