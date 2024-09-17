@@ -30,7 +30,9 @@ public class SecurityConfiguration {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/api/v1/auth/**").permitAll()
+                        .requestMatchers("/").permitAll().requestMatchers("/eureka/**").permitAll()
                         .anyRequest().authenticated()
+//                                .anyRequest().permitAll()
                 )
 //                .authenticationProvider(authenticationProvider) // Commented out since we are not doing authentication here on this service
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)

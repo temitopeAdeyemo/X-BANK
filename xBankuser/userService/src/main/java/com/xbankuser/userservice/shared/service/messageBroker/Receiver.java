@@ -13,12 +13,11 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Configuration
 public class Receiver {
+    private final BaseEmailClient emailClient;
     public static final String EMAIL_DLX_ROUTING_KEY = "EMAIL_DLX_ROUTING_KEY";
     public static final String EMAIL_QUEUE_EXCHANGE = "EMAIL_QUEUE_EXCHANGE";
     public static final String EMAIL_QUEUE_ROUTING_KEY = "EMAIL_QUEUE_ROUTING_KEY";
-    private final BaseEmailClient emailClient;
     private final static String QUEUE_NAME = "EMAIL_QUEUE";
-    
     public static final String RETRY_QUEUE = "RETRY_QUEUE";
     public static final String MY_DLX = "MY_DLX";
 
