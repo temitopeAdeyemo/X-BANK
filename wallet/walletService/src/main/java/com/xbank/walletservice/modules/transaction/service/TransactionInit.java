@@ -28,9 +28,13 @@ public class TransactionInit extends TransactionInitServiceGrpc.TransactionInitS
     @Override
     @Transactional(dontRollbackOn = {InsufficientBalanceException.class, TransactionDeclinedException.class})
     public void fundTransfer(FundTransferRequest request, StreamObserver<FundDepositResponse> responseObserver) {
-        Wallet senderWallet = this.walletRepository.findByUserId(UUID.fromString(request.getSenderId())).orElseThrow(()-> new EntityNotFoundException("Sender Wallet Not Found."));
+        String processId = UUID.randomUUID().toString();
 
-        Wallet receiverWallet = this.walletRepository.getByAccountNumberOrId(request.getReceiverAccountNumber()).orElseThrow(()-> new EntityNotFoundException("Receiver Wallet Not Found."));
+        // Save a session in memory / redis here to show tht start of a process with process id and request.getSenderId()
+
+        Wallet senderWallet = this.walletRepository.findByUserIdForLock(UUID.fromString(request.getSenderId())).orElseThrow(()-> new EntityNotFoundException("Sender Wallet Not Found."));
+
+        Wallet receiverWallet = this.walletRepository.getByAccountNumberOrIdForLock(request.getReceiverAccountNumber()).orElseThrow(()-> new EntityNotFoundException("Receiver Wallet Not Found."));
 
         if(senderWallet.getBalance().compareTo(BigDecimal.ZERO) <= 0 || senderWallet.getBalance().compareTo(BigDecimal.valueOf(request.getAmount()))< 0) {
             var newTransactionData = TransactionDataMapper.mapProtoToTransactionData(
@@ -84,6 +88,9 @@ public class TransactionInit extends TransactionInitServiceGrpc.TransactionInitS
 
         receiverWallet.setBalance(receiverWallet.getBalance().add(BigDecimal.valueOf(request.getAmount())));
 
+        // Do a session Check here to see if the saved process id and request.getSenderId() in the opened session is the current process id and request.getSenderId() in the running process
+        // If false, then a new session has overridden the current process. Throw error.
+
         walletRepository.save(receiverWallet);
 
         walletRepository.save(senderWallet);
@@ -105,7 +112,7 @@ public class TransactionInit extends TransactionInitServiceGrpc.TransactionInitS
     @Override
     @Transactional(dontRollbackOn = TransactionDeclinedException.class)
     public void fundWallet(FundWalletRequest request, StreamObserver<FundDepositResponse> responseObserver) {
-        var wallet = this.walletRepository.findByUserId(UUID.fromString(request.getUserId())).orElseThrow(()-> new EntityNotFoundException("Wallet Not Found."));
+        var wallet = this.walletRepository.findByUserIdForLock(UUID.fromString(request.getUserId())).orElseThrow(()-> new EntityNotFoundException("Wallet Not Found."));
 
         if(request.getAmount() <= 0){
             Transaction newTransactionData = TransactionDataMapper.mapProtoToTransactionData(
